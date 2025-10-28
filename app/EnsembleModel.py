@@ -1,134 +1,98 @@
+#!/usr/bin/env python3
+"""
+ADVANCED ENSEMBLE MODEL
+Risolve il problema delle predizioni troppo piatte con:
+- Confidence calibration
+- Adaptive thresholds
+- Uncertainty quantification
+- Model disagreement detection
+"""
+
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from scipy.optimize import minimize
+from scipy.stats import norm
 
 
-class EnsembleModel:
+class AdvancedEnsembleModel:
     """
-    Meta-ensemble that combines predictions from multiple models
-    Uses optimized weights to maximize performance
+    Ensemble avanzato che risolve i problemi critici:
+    1. Predizioni troppo piatte → Adaptive scaling
+    2. No prediction on down days → Asymmetric thresholds
+    3. Poor confidence intervals → Proper calibration
     """
 
     def __init__(self, config, models_dict=None):
-        """
-        Args:
-            config: Configuration dictionary
-            models_dict: Dictionary of trained models {name: model_object}
-        """
         self.config = config
         self.models = models_dict or {}
         self.weights = None
         self.ensemble_config = config['models']['ensemble']
         self.method = self.ensemble_config['method']
 
-    def add_model(self, name, model):
-        """Add a model to the ensemble"""
-        self.models[name] = model
-        print(f"Added {name} to ensemble")
+        # Calibration parameters
+        self.calibration_params = {
+            'scale': 1.0,
+            'offset': 0.0,
+            'confidence_scale': 1.0
+        }
 
-    def collect_predictions(self, X, models_to_use=None):
-        """
-        Collect predictions from all models
-
-        Args:
-            X: Input features
-            models_to_use: List of model names to use (None = all)
-
-        Returns:
-            DataFrame with predictions from each model
-        """
-        if models_to_use is None:
-            models_to_use = list(self.models.keys())
-
-        predictions = {}
-
-        for name in models_to_use:
-            if name not in self.models:
-                print(f"WARNING: Model {name} not found in ensemble")
-                continue
-
-            try:
-                model = self.models[name]
-                pred = model.predict(X)
-
-                # Handle NaN values
-                if pred is None or (isinstance(pred, np.ndarray) and np.all(np.isnan(pred))):
-                    print(f"WARNING: Model {name} returned invalid predictions")
-                    continue
-
-                predictions[name] = pred
-                print(f"Collected predictions from {name}")
-
-            except Exception as e:
-                print(f"ERROR: Error collecting predictions from {name}: {e}")
-                continue
-
-        if not predictions:
-            print("ERROR: No valid predictions collected from any model")
-            return None
-
-        return pd.DataFrame(predictions)
+        # Adaptive thresholds
+        self.adaptive_thresholds = {
+            'up': 0.005,
+            'down': -0.005
+        }
 
     def optimize_weights(self, X_val, y_val, models_to_use=None):
         """
-        Optimize ensemble weights on validation set
-
-        Args:
-            X_val: Validation features
-            y_val: Validation targets
-            models_to_use: List of model names to use
-
-        Returns:
-            Optimized weights dictionary
+        Ottimizza pesi con focus su directional accuracy
         """
-        print("Optimizing ensemble weights...")
+        print("Optimizing ensemble weights with directional focus...")
 
-        # Collect predictions
         predictions_df = self.collect_predictions(X_val, models_to_use)
 
         if predictions_df is None or predictions_df.empty:
-            print("ERROR: Cannot optimize weights - no predictions available")
+            print("ERROR: Cannot optimize weights")
             return None
 
-        # CRITICAL FIX: Reset indices to ensure alignment
+        # Reset indices
         predictions_df = predictions_df.reset_index(drop=True)
 
-        # Convert y_val to numpy array to avoid index issues
         if hasattr(y_val, 'values'):
             y_val_array = y_val.values
-        elif hasattr(y_val, 'reset_index'):
-            y_val_array = y_val.reset_index(drop=True).values
         else:
             y_val_array = np.array(y_val)
 
-        # Remove rows with any NaN using numpy boolean indexing
+        # Remove NaN
         valid_mask = ~predictions_df.isna().any(axis=1).values
         predictions_clean = predictions_df[valid_mask].values
         y_clean = y_val_array[valid_mask]
 
         if len(predictions_clean) == 0:
-            print("ERROR: No valid predictions for optimization")
             return None
 
         n_models = predictions_clean.shape[1]
 
-        print(f"Optimizing with {n_models} models and {len(predictions_clean)} valid samples")
-
-        # Optimization objective: minimize RMSE
+        # Multi-objective optimization: RMSE + Directional Accuracy
         def objective(weights):
             ensemble_pred = np.dot(predictions_clean, weights)
-            rmse = np.sqrt(mean_squared_error(y_clean, ensemble_pred))
-            return rmse
 
-        # Constraints: weights sum to 1 and are non-negative
+            # RMSE component
+            rmse = np.sqrt(mean_squared_error(y_clean, ensemble_pred))
+
+            # Directional accuracy component
+            y_direction = (y_clean > 0).astype(int)
+            pred_direction = (ensemble_pred > 0).astype(int)
+            dir_accuracy = np.mean(y_direction == pred_direction)
+
+            # Combined objective (minimize RMSE, maximize direction)
+            # Weight directional accuracy heavily
+            return rmse - (dir_accuracy * 0.05)  # Directional worth 0.05 RMSE reduction
+
         constraints = {'type': 'eq', 'fun': lambda w: np.sum(w) - 1}
         bounds = [(0, 1) for _ in range(n_models)]
-
-        # Initial guess: equal weights
         initial_weights = np.ones(n_models) / n_models
 
-        # Optimize
         result = minimize(
             objective,
             initial_weights,
@@ -139,56 +103,247 @@ class EnsembleModel:
         )
 
         if result.success:
-            optimal_weights = result.x
-            self.weights = dict(zip(predictions_df.columns, optimal_weights))
+            self.weights = dict(zip(predictions_df.columns, result.x))
+
+            # Evaluate
+            ensemble_pred = np.dot(predictions_clean, result.x)
+            rmse = np.sqrt(mean_squared_error(y_clean, ensemble_pred))
+            dir_acc = np.mean((y_clean > 0) == (ensemble_pred > 0))
 
             print("Weight optimization successful:")
             for name, weight in self.weights.items():
                 print(f"  {name}: {weight:.4f}")
-
-            # Evaluate with optimal weights
-            ensemble_pred = np.dot(predictions_clean, optimal_weights)
-            rmse = np.sqrt(mean_squared_error(y_clean, ensemble_pred))
-            print(f"Ensemble RMSE with optimized weights: {rmse:.6f}")
+            print(f"\nEnsemble RMSE: {rmse:.6f}")
+            print(f"Directional Accuracy: {dir_acc:.2%}")
 
             return self.weights
         else:
-            print("WARNING: Weight optimization failed, using equal weights")
+            print("WARNING: Optimization failed")
             self.weights = dict(zip(predictions_df.columns, initial_weights))
             return self.weights
 
-    def predict(self, X, use_optimized_weights=True):
+    def calibrate_predictions(self, predictions, actuals):
         """
-        Make ensemble predictions
+        Calibra le predizioni per risolvere il problema "too flat"
 
-        Args:
-            X: Input features
-            use_optimized_weights: Use optimized weights if available
+        Problema: predictions hanno variance troppo bassa
+        Soluzione: Scala per matchare la variance degli actuals
+        """
+        print("\nCalibrating prediction scale...")
+
+        # Remove NaN
+        mask = ~(np.isnan(predictions) | np.isnan(actuals))
+        pred_clean = predictions[mask]
+        actual_clean = actuals[mask]
+
+        if len(pred_clean) == 0:
+            return predictions
+
+        # Calculate scale factor
+        pred_std = np.std(pred_clean)
+        actual_std = np.std(actual_clean)
+
+        if pred_std > 0:
+            scale_factor = actual_std / pred_std
+        else:
+            scale_factor = 1.0
+
+        # Calculate offset (bias correction)
+        pred_mean = np.mean(pred_clean)
+        actual_mean = np.mean(actual_clean)
+        offset = actual_mean - (pred_mean * scale_factor)
+
+        # Store calibration params
+        self.calibration_params['scale'] = scale_factor
+        self.calibration_params['offset'] = offset
+
+        print(f"Scale factor: {scale_factor:.4f}")
+        print(f"Offset: {offset:.6f}")
+
+        # Apply calibration
+        calibrated = predictions * scale_factor + offset
+
+        # Verify
+        cal_std = np.std(calibrated[mask])
+        print(f"Prediction std before: {pred_std:.6f}")
+        print(f"Prediction std after: {cal_std:.6f}")
+        print(f"Actual std: {actual_std:.6f}")
+
+        return calibrated
+
+    def compute_adaptive_thresholds(self, predictions, actuals):
+        """
+        Calcola threshold asimmetrici per UP/DOWN
+
+        Problema: Fixed threshold 0 non funziona
+        Soluzione: Use quantiles of prediction distribution
+        """
+        mask = ~(np.isnan(predictions) | np.isnan(actuals))
+        pred_clean = predictions[mask]
+        actual_clean = actuals[mask]
+
+        if len(pred_clean) == 0:
+            return
+
+        # Find optimal thresholds that maximize directional accuracy
+        best_acc = 0
+        best_up_thresh = 0
+        best_down_thresh = 0
+
+        # Search grid
+        up_candidates = np.percentile(pred_clean, [40, 45, 50, 55, 60])
+        down_candidates = np.percentile(pred_clean, [40, 45, 50, 55, 60])
+
+        for up_t in up_candidates:
+            for down_t in down_candidates:
+                pred_dir = np.where(pred_clean > up_t, 1,
+                                    np.where(pred_clean < down_t, -1, 0))
+                actual_dir = np.where(actual_clean > 0, 1,
+                                      np.where(actual_clean < 0, -1, 0))
+
+                acc = np.mean(pred_dir == actual_dir)
+
+                if acc > best_acc:
+                    best_acc = acc
+                    best_up_thresh = up_t
+                    best_down_thresh = down_t
+
+        self.adaptive_thresholds['up'] = best_up_thresh
+        self.adaptive_thresholds['down'] = best_down_thresh
+
+        print(f"\nAdaptive thresholds:")
+        print(f"  UP threshold: {best_up_thresh:.6f}")
+        print(f"  DOWN threshold: {best_down_thresh:.6f}")
+        print(f"  Directional accuracy with adaptive: {best_acc:.2%}")
+
+    def predict_with_calibration(self, X, y_val=None):
+        """
+        Predizione con calibrazione applicata
+        """
+        # Base prediction
+        base_predictions = self.predict(X, use_optimized_weights=True)
+
+        if base_predictions is None:
+            return None
+
+        # Apply calibration if parameters exist
+        calibrated = (base_predictions * self.calibration_params['scale'] +
+                      self.calibration_params['offset'])
+
+        return calibrated
+
+    def predict_with_uncertainty(self, X):
+        """
+        Predizione con quantificazione uncertainty
 
         Returns:
-            Ensemble predictions
+            predictions: Point predictions
+            uncertainty: Epistemic uncertainty (model disagreement)
+            aleatoric: Aleatoric uncertainty (data noise)
         """
-        # Collect predictions from all models
+        predictions_df = self.collect_predictions(X)
+
+        if predictions_df is None:
+            return None, None, None
+
+        # Point prediction (calibrated)
+        base_pred = self.predict(X, use_optimized_weights=True)
+        calibrated_pred = (base_pred * self.calibration_params['scale'] +
+                           self.calibration_params['offset'])
+
+        # Epistemic uncertainty (model disagreement)
+        epistemic = predictions_df.std(axis=1).values
+
+        # Aleatoric uncertainty (estimated from residuals)
+        # This would be learned from validation set
+        aleatoric = np.ones_like(calibrated_pred) * 0.02  # Conservative estimate
+
+        # Total uncertainty
+        total_uncertainty = np.sqrt(epistemic ** 2 + aleatoric ** 2)
+
+        return calibrated_pred, epistemic, total_uncertainty
+
+    def predict_with_confidence_intervals(self, X, confidence=0.95):
+        """
+        Confidence intervals calibrati
+        """
+        pred, epistemic, total_unc = self.predict_with_uncertainty(X)
+
+        if pred is None:
+            return None, None, None
+
+        # Z-score for confidence level
+        z = norm.ppf((1 + confidence) / 2)
+
+        # Confidence intervals
+        lower = pred - z * total_unc
+        upper = pred + z * total_unc
+
+        return pred, lower, upper
+
+    def should_trade(self, predictions):
+        """
+        Determina se tradare basato su adaptive thresholds
+
+        Returns:
+            signals: 1=buy, -1=sell, 0=hold
+        """
+        signals = np.zeros_like(predictions)
+
+        # Buy signal
+        signals[predictions > self.adaptive_thresholds['up']] = 1
+
+        # Sell signal  
+        signals[predictions < self.adaptive_thresholds['down']] = -1
+
+        return signals
+
+    def collect_predictions(self, X, models_to_use=None):
+        """Collect predictions from models"""
+        if models_to_use is None:
+            models_to_use = list(self.models.keys())
+
+        predictions = {}
+
+        for name in models_to_use:
+            if name not in self.models:
+                continue
+
+            try:
+                pred = self.models[name].predict(X)
+
+                if pred is None or (isinstance(pred, np.ndarray) and np.all(np.isnan(pred))):
+                    continue
+
+                predictions[name] = pred
+
+            except Exception as e:
+                print(f"Error collecting from {name}: {e}")
+                continue
+
+        if not predictions:
+            return None
+
+        return pd.DataFrame(predictions)
+
+    def predict(self, X, use_optimized_weights=True):
+        """Base prediction"""
         predictions_df = self.collect_predictions(X)
 
         if predictions_df is None or predictions_df.empty:
-            print("ERROR: Cannot make predictions - no model outputs available")
             return None
 
-        # Determine weights
+        # Weights
         if use_optimized_weights and self.weights is not None:
-            # Use optimized weights
             weights_array = np.array([
                 self.weights.get(col, 1.0 / len(predictions_df.columns))
                 for col in predictions_df.columns
             ])
-            weights_array = weights_array / weights_array.sum()  # Normalize
+            weights_array = weights_array / weights_array.sum()
         else:
-            # Equal weights
             weights_array = np.ones(len(predictions_df.columns)) / len(predictions_df.columns)
 
-        # Handle NaN values
-        # For each row, compute weighted average of non-NaN predictions
+        # Weighted average handling NaN
         ensemble_predictions = []
 
         for idx in range(len(predictions_df)):
@@ -196,10 +351,8 @@ class EnsembleModel:
             mask = ~np.isnan(row)
 
             if mask.sum() == 0:
-                # All predictions are NaN
                 ensemble_predictions.append(np.nan)
             else:
-                # Weighted average of available predictions
                 available_weights = weights_array[mask]
                 available_weights = available_weights / available_weights.sum()
                 pred = np.dot(row[mask], available_weights)
@@ -207,175 +360,129 @@ class EnsembleModel:
 
         return np.array(ensemble_predictions)
 
-    def predict_with_confidence(self, X, use_optimized_weights=True):
-        """
-        Make predictions with confidence intervals
-
-        Returns:
-            predictions: Point predictions
-            lower_bound: Lower confidence bound
-            upper_bound: Upper confidence bound
-            std: Standard deviation of model predictions
-        """
-        predictions_df = self.collect_predictions(X)
-
-        if predictions_df is None or predictions_df.empty:
-            return None, None, None, None
-
-        # Point prediction
-        ensemble_pred = self.predict(X, use_optimized_weights)
-
-        # Confidence from prediction variance
-        pred_std = predictions_df.std(axis=1).values
-        pred_mean = predictions_df.mean(axis=1).values
-
-        # 95% confidence interval (assuming normal distribution)
-        confidence_level = self.config.get('prediction', {}).get('confidence_level', 0.95)
-        z_score = 1.96  # for 95% CI
-
-        lower_bound = pred_mean - z_score * pred_std
-        upper_bound = pred_mean + z_score * pred_std
-
-        return ensemble_pred, lower_bound, upper_bound, pred_std
-
     def evaluate(self, X, y, task='regression', use_optimized_weights=True):
-        """
-        Evaluate ensemble performance
-        """
+        """Evaluation con metriche avanzate"""
+        # Base predictions
         predictions = self.predict(X, use_optimized_weights)
 
         if predictions is None:
-            print("ERROR: Cannot evaluate - predictions failed")
             return {}
 
-        # Convert y to numpy array
+        # Calibrated predictions
+        calibrated = (predictions * self.calibration_params['scale'] +
+                      self.calibration_params['offset'])
+
+        # Convert y
         if hasattr(y, 'values'):
             y_array = y.values
         else:
             y_array = np.array(y)
 
-        # Remove NaN values
-        mask = ~np.isnan(predictions)
-        predictions_clean = predictions[mask]
+        # Remove NaN
+        mask = ~np.isnan(calibrated)
+        calibrated_clean = calibrated[mask]
         y_clean = y_array[mask]
 
-        if len(predictions_clean) == 0:
-            print("WARNING: No valid predictions for evaluation")
+        if len(calibrated_clean) == 0:
             return {}
 
-        if task == 'regression':
-            mse = mean_squared_error(y_clean, predictions_clean)
-            rmse = np.sqrt(mse)
-            mae = mean_absolute_error(y_clean, predictions_clean)
-            r2 = r2_score(y_clean, predictions_clean)
+        # Regression metrics
+        mse = mean_squared_error(y_clean, calibrated_clean)
+        rmse = np.sqrt(mse)
+        mae = mean_absolute_error(y_clean, calibrated_clean)
+        r2 = r2_score(y_clean, calibrated_clean)
 
-            metrics = {
-                'MSE': mse,
-                'RMSE': rmse,
-                'MAE': mae,
-                'R2': r2
-            }
+        # Directional accuracy
+        dir_acc = np.mean((y_clean > 0) == (calibrated_clean > 0))
 
-            print(f"Ensemble Evaluation - RMSE: {rmse:.6f}, MAE: {mae:.6f}, R2: {r2:.4f}")
+        # Directional with adaptive thresholds
+        signals = self.should_trade(calibrated_clean)
+        actual_dir = np.sign(y_clean)
+        adaptive_dir_acc = np.mean(signals == actual_dir)
 
-        else:  # classification
-            from sklearn.metrics import accuracy_score
+        # Up/Down separate
+        up_mask = y_clean > 0
+        down_mask = y_clean < 0
 
-            predictions_binary = (predictions_clean > 0.5).astype(int)
-            accuracy = accuracy_score(y_clean, predictions_binary)
+        up_acc = np.mean((calibrated_clean[up_mask] > 0)) if up_mask.sum() > 0 else 0
+        down_acc = np.mean((calibrated_clean[down_mask] < 0)) if down_mask.sum() > 0 else 0
 
-            correct_direction = np.sum((predictions_clean > 0.5) == (y_clean > 0))
-            directional_accuracy = correct_direction / len(y_clean)
+        metrics = {
+            'MSE': mse,
+            'RMSE': rmse,
+            'MAE': mae,
+            'R2': r2,
+            'Directional_Accuracy': dir_acc,
+            'Adaptive_Dir_Accuracy': adaptive_dir_acc,
+            'Up_Days_Accuracy': up_acc,
+            'Down_Days_Accuracy': down_acc
+        }
 
-            metrics = {
-                'Accuracy': accuracy,
-                'Directional_Accuracy': directional_accuracy
-            }
-
-            print(f"Ensemble Evaluation - Accuracy: {accuracy:.4f}, Directional: {directional_accuracy:.4f}")
+        print(f"\n📊 Advanced Ensemble Evaluation:")
+        print(f"RMSE: {rmse:.6f}, R²: {r2:.4f}")
+        print(f"Directional: {dir_acc:.2%}")
+        print(f"Adaptive Directional: {adaptive_dir_acc:.2%}")
+        print(f"Up Days: {up_acc:.2%}, Down Days: {down_acc:.2%}")
 
         return metrics
 
-    def get_model_contributions(self, X):
+    def train_calibration(self, X_val, y_val):
         """
-        Analyze how much each model contributes to final predictions
+        Train calibration on validation set
+        CRITICO: Chiamare dopo optimize_weights
         """
-        predictions_df = self.collect_predictions(X)
+        print("\n" + "=" * 80)
+        print("TRAINING CALIBRATION")
+        print("=" * 80)
 
-        if predictions_df is None or self.weights is None:
-            return None
+        # Get base predictions
+        base_pred = self.predict(X_val, use_optimized_weights=True)
 
-        contributions = {}
+        if base_pred is None:
+            print("ERROR: Cannot calibrate")
+            return
 
-        for model_name in predictions_df.columns:
-            if model_name in self.weights:
-                weight = self.weights[model_name]
-                pred_contribution = predictions_df[model_name] * weight
-                contributions[model_name] = {
-                    'weight': weight,
-                    'mean_prediction': predictions_df[model_name].mean(),
-                    'mean_contribution': pred_contribution.mean()
-                }
-
-        return pd.DataFrame(contributions).T
-
-    def compare_models(self, X, y):
-        """
-        Compare individual model performances
-        """
-        predictions_df = self.collect_predictions(X)
-
-        if predictions_df is None:
-            return None
-
-        comparison = {}
-
-        # Convert y to numpy
-        if hasattr(y, 'values'):
-            y_array = y.values
+        # Convert y_val
+        if hasattr(y_val, 'values'):
+            y_val_array = y_val.values
         else:
-            y_array = np.array(y)
+            y_val_array = np.array(y_val)
 
-        # Reset index of predictions_df
-        predictions_df = predictions_df.reset_index(drop=True)
+        # Calibrate
+        self.calibrate_predictions(base_pred, y_val_array)
 
-        # Remove NaN for fair comparison
-        valid_mask = ~predictions_df.isna().any(axis=1).values
-        y_clean = y_array[valid_mask]
+        # Compute adaptive thresholds
+        calibrated = (base_pred * self.calibration_params['scale'] +
+                      self.calibration_params['offset'])
+        self.compute_adaptive_thresholds(calibrated, y_val_array)
 
-        for model_name in predictions_df.columns:
-            pred = predictions_df[model_name][valid_mask].values
+        print("=" * 80)
+        print("CALIBRATION COMPLETE")
+        print("=" * 80)
 
-            rmse = np.sqrt(mean_squared_error(y_clean, pred))
-            mae = mean_absolute_error(y_clean, pred)
-            r2 = r2_score(y_clean, pred)
 
-            comparison[model_name] = {
-                'RMSE': rmse,
-                'MAE': mae,
-                'R2': r2
-            }
+# ============================================================================
+# INTEGRATION EXAMPLE
+# ============================================================================
 
-        # Add ensemble
-        ensemble_pred = self.predict(X)
-        if ensemble_pred is not None:
-            ensemble_pred_array = np.array(ensemble_pred)
-            valid_ensemble = ~np.isnan(ensemble_pred_array) & valid_mask
-            if valid_ensemble.sum() > 0:
-                rmse = np.sqrt(mean_squared_error(y_array[valid_ensemble], ensemble_pred_array[valid_ensemble]))
-                mae = mean_absolute_error(y_array[valid_ensemble], ensemble_pred_array[valid_ensemble])
-                r2 = r2_score(y_array[valid_ensemble], ensemble_pred_array[valid_ensemble])
+"""
+# In main.py, replace EnsembleModel with AdvancedEnsembleModel:
 
-                comparison['Ensemble'] = {
-                    'RMSE': rmse,
-                    'MAE': mae,
-                    'R2': r2
-                }
+# OLD:
+from EnsembleModel import EnsembleModel
+self.ensemble = EnsembleModel(self.config, self.models)
 
-        df_comparison = pd.DataFrame(comparison).T
-        df_comparison = df_comparison.sort_values('RMSE')
+# NEW:
+from EnsembleModel_ADVANCED import AdvancedEnsembleModel
+self.ensemble = AdvancedEnsembleModel(self.config, self.models)
 
-        print("\nModel Comparison:")
-        print(f"\n{df_comparison}")
+# After optimize_weights, add calibration:
+if self.config['models']['ensemble']['optimization']:
+    self.ensemble.optimize_weights(X_val, y_val)
 
-        return df_comparison
+    # 🆕 NEW: Train calibration
+    self.ensemble.train_calibration(X_val, y_val)
+
+# When predicting, use calibrated predictions:
+ensemble_pred = self.ensemble.predict_with_calibration(X_test)
+"""
