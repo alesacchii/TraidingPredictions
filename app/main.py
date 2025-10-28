@@ -17,11 +17,11 @@ warnings.filterwarnings('ignore')
 # Import custom modules
 from configuration.Logger_config import setup_logger, logger
 from DownloadMarketData import MarketDataDownloader
-from FeatureEngineering import FeatureEngineer
+from FeatureEngineering import AdvancedFeatureEngineer
 from TreeModels import TreeBasedModels, TimeSeriesCV
 from LSTMModel import LSTMModel
 from TimesFMModel import TimesFMModel
-from EnsembleModel import EnsembleModel
+from EnsembleModel import AdvancedEnsembleModel
 from Backtesting import Backtester
 from test_prediction_quality import PredictionQualityTester
 from feature_validator import FeatureValidator
@@ -47,7 +47,7 @@ class StockPredictionSystem:
 
         # Initialize components
         self.data_downloader = MarketDataDownloader(self.config)
-        self.feature_engineer = FeatureEngineer(self.config)
+        self.feature_engineer = AdvancedFeatureEngineer(self.config)
 
         # Data storage
         self.raw_data = None
@@ -258,7 +258,7 @@ class StockPredictionSystem:
         # Ensemble predictions
         if self.config['models']['ensemble']['enabled'] and len(self.models) > 1:
             logger.info("\n--- Creating Ensemble ---")
-            self.ensemble = EnsembleModel(self.config, self.models)
+            self.ensemble = AdvancedEnsembleModel(self.config, self.models)
 
             # Optimize weights on validation set
             if self.config['models']['ensemble']['optimization']:
