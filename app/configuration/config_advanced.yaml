@@ -1,0 +1,208 @@
+# Market Prediction System Configuration
+
+data_download:
+  stocks_list:
+    - AAPL
+    - GOOGL
+    - TSLA
+    - NVDA
+    - META
+  start_date: '2018-01-01'
+  end_date: null  # null = today
+  
+# Feature Engineering
+features:
+  technical_indicators:
+    # Trend
+    - SMA_20
+    - SMA_50
+    - SMA_200
+    - EMA_12
+    - EMA_26
+    - MACD
+    - MACD_signal
+    - MACD_hist
+    
+    # Momentum
+    - RSI_14
+    - RSI_7
+    - STOCH_k
+    - STOCH_d
+    - CCI_20
+    - Williams_R
+    - ROC_10
+    
+    # Volatility
+    - BB_upper
+    - BB_middle
+    - BB_lower
+    - BB_width
+    - ATR_14
+    - Volatility_20
+    
+    # Volume
+    - OBV
+    - Volume_SMA_20
+    - Volume_ratio
+    - MFI_14
+    - VWAP
+    
+  price_features:
+    - Returns_1d
+    - Returns_5d
+    - Returns_20d
+    - Log_returns
+    - Price_momentum_5
+    - Price_momentum_20
+    - High_Low_ratio
+    - Close_Open_ratio
+    
+  advanced_features:
+    - Volatility_regime
+    - Trend_strength
+    - Support_level
+    - Resistance_level
+    - Gap_percentage
+    - Volume_spike
+    
+  cross_asset:
+    - Correlation_SPY
+    - Correlation_VIX
+    - Beta_market
+    
+  sentiment:
+    enabled: true
+    sources:
+      - news_headlines
+      - social_media  # optional
+    
+  macro_economic:
+    enabled: true
+    indicators:
+      - FEDFUNDS  # Federal Funds Rate
+      - DGS10     # 10-Year Treasury
+      - VIXCLS    # VIX
+      - DEXUSEU   # USD/EUR
+      - DCOILWTICO # Oil prices
+
+# Model Configuration
+models:
+  xgboost:
+    enabled: true
+    params:
+      n_estimators: 500
+      max_depth: 7
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      gamma: 0.1
+      reg_alpha: 0.1
+      reg_lambda: 1.0
+      random_state: 42
+      
+  lightgbm:
+    enabled: true
+    params:
+      n_estimators: 500
+      max_depth: 7
+      learning_rate: 0.05
+      num_leaves: 31
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_alpha: 0.1
+      reg_lambda: 1.0
+      random_state: 42
+      
+  lstm:
+    enabled: true
+    params:
+      sequence_length: 60
+      lstm_units: [128, 64, 32]
+      dropout: 0.2
+      epochs: 100
+      batch_size: 32
+      learning_rate: 0.001
+      
+  timesfm:
+    enabled: true
+    model_name: "google/timesfm-2.5-200m-pytorch"
+    params:
+      context_length: 512
+      horizon_length: 30
+      backend: "gpu"  # or "cpu"
+      
+  ensemble:
+    enabled: true
+    method: "weighted_average"  # or "stacking"
+    optimization: true  # optimize weights using validation set
+
+# Prediction Configuration
+prediction:
+  horizons: [1, 5, 20]  # days ahead to predict
+  targets:
+    - direction  # up/down classification
+    - returns    # percentage returns
+    - price      # absolute price
+  
+  confidence_intervals: true
+  confidence_level: 0.95
+
+# Training Configuration
+training:
+  validation_split: 0.2
+  test_split: 0.1
+  walk_forward: true
+  cross_validation_folds: 5
+  
+  early_stopping:
+    enabled: true
+    patience: 20
+    monitor: 'val_loss'
+    
+  hyperparameter_tuning:
+    enabled: false  # Set true for optuna tuning
+    n_trials: 50
+    
+# Backtesting
+backtesting:
+  enabled: true
+  initial_capital: 100000
+  commission: 0.001  # 0.1%
+  slippage: 0.0005   # 0.05%
+  
+  strategies:
+    - threshold_based  # buy if prediction > threshold
+    - top_k           # buy top K predictions
+    - portfolio_optimization  # Kelly criterion / mean-variance
+    
+  metrics:
+    - sharpe_ratio
+    - max_drawdown
+    - win_rate
+    - profit_factor
+    - total_return
+    - annual_return
+    
+# Output Configuration
+output:
+  save_models: true
+  save_predictions: true
+  save_features: true
+  
+  reports:
+    - performance_summary
+    - feature_importance
+    - prediction_analysis
+    - backtest_results
+    
+  format: ['csv', 'json', 'html']
+  
+# Logger
+logger:
+  log_level: 'INFO'
+  log_file: 'logs/prediction_system.log'
+  
+# API Keys (set as environment variables)
+api_keys:
+  news_api: 'NEWS_API_KEY'
+  fred_api: 'FRED_API_KEY'
