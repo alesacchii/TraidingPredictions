@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Stock Market Prediction System
-Main orchestrator for the multi-model prediction pipeline
-"""
-
 import os
 import sys
 import yaml
@@ -17,26 +11,45 @@ warnings.filterwarnings('ignore')
 # Import custom modules
 from configuration.Logger_config import setup_logger, logger
 from DownloadMarketData import MarketDataDownloader
-from FeatureEngineering import AdvancedFeatureEngineer
+from FeatureEngineering import FeatureEngineer
 from TreeModels import TreeBasedModels, TimeSeriesCV
 from LSTMModel import LSTMModel
 from TimesFMModel import TimesFMModel
-from EnsembleModel import AdvancedEnsembleModel
 from Backtesting import Backtester
 from test_prediction_quality import PredictionQualityTester
 from feature_validator import FeatureValidator
 
+# 🆕 NUOVO: Import componenti avanzati
+try:
+    from FeatureEngineering_IMPROVED import integrate_with_existing_feature_engineer
+
+    ADVANCED_FEATURES_AVAILABLE = True
+    logger.info("✓ Advanced features module available")
+except ImportError:
+    ADVANCED_FEATURES_AVAILABLE = False
+    logger.warning("⚠ Advanced features module not found - using basic features only")
+
+try:
+    from EnsembleModel_ADVANCED import AdvancedEnsembleModel
+
+    ADVANCED_ENSEMBLE_AVAILABLE = True
+    logger.info("✓ Advanced ensemble module available")
+except ImportError:
+    ADVANCED_ENSEMBLE_AVAILABLE = False
+    logger.warning("⚠ Advanced ensemble not found - using standard ensemble")
+    from EnsembleModel import EnsembleModel
+
 
 class StockPredictionSystem:
     """
-    Complete stock prediction system orchestrator
+    Complete stock prediction system orchestrator - UPGRADED
     """
 
     def __init__(self, config_path='config_advanced.yaml'):
         """Initialize the system with configuration"""
 
         logger.info("=" * 80)
-        logger.info("STOCK MARKET PREDICTION SYSTEM")
+        logger.info("STOCK MARKET PREDICTION SYSTEM - UPGRADED VERSION")
         logger.info("=" * 80)
 
         # Load configuration
@@ -47,7 +60,7 @@ class StockPredictionSystem:
 
         # Initialize components
         self.data_downloader = MarketDataDownloader(self.config)
-        self.feature_engineer = AdvancedFeatureEngineer(self.config)
+        self.feature_engineer = FeatureEngineer(self.config)
 
         # Data storage
         self.raw_data = None
@@ -64,9 +77,13 @@ class StockPredictionSystem:
         self.predictions = {}
         self.metrics = {}
 
+        # Feature flags
+        self.use_advanced_features = ADVANCED_FEATURES_AVAILABLE
+        self.use_advanced_ensemble = ADVANCED_ENSEMBLE_AVAILABLE
+
     def run_full_pipeline(self):
         """
-        Execute the complete prediction pipeline
+        Execute the complete prediction pipeline - UPGRADED
         """
         logger.info("\n" + "=" * 80)
         logger.info("STARTING FULL PREDICTION PIPELINE")
@@ -75,7 +92,7 @@ class StockPredictionSystem:
         # Step 1: Data Download
         self.download_data()
 
-        # Step 2: Feature Engineering
+        # Step 2: Feature Engineering (UPGRADED)
         self.create_features()
 
         # Step 3: Data Splitting
@@ -84,13 +101,13 @@ class StockPredictionSystem:
         # Step 4: Train Models
         self.train_models()
 
-        # Step 5: Make Predictions
+        # Step 5: Make Predictions (UPGRADED)
         self.make_predictions()
 
-        # Step 6: Evaluate Models
+        # Step 6: Evaluate Models (UPGRADED)
         self.evaluate_models()
 
-        # Step 6.5: Test Prediction Quality (RIGOROUS)
+        # Step 6.5: Test Prediction Quality
         self.test_prediction_quality()
 
         # Step 7: Backtest
@@ -99,6 +116,9 @@ class StockPredictionSystem:
 
         # Step 8: Generate Report
         self.generate_report()
+
+        # 🆕 STEP 9: Auto-generate dashboard
+        self.generate_dashboard()
 
         logger.info("\n" + "=" * 80)
         logger.info("PIPELINE COMPLETE")
@@ -125,11 +145,12 @@ class StockPredictionSystem:
         logger.info("Data download complete\n")
 
     def create_features(self):
-        """Create features from raw data"""
+        """Create features from raw data - UPGRADED"""
         logger.info("-" * 80)
-        logger.info("STEP 2: FEATURE ENGINEERING")
+        logger.info("STEP 2: FEATURE ENGINEERING (UPGRADED)")
         logger.info("-" * 80)
 
+        # Base features (original)
         self.features_data = self.feature_engineer.create_all_features(
             self.raw_data['stock_data'],
             market_data=self.raw_data['market_indices'],
@@ -137,8 +158,27 @@ class StockPredictionSystem:
             sentiment_data=self.raw_data['news_data']
         )
 
-        logger.info(f"\nFeatures created: {self.features_data.shape}")
-        logger.info(f"Number of features: {len(self.feature_engineer.get_feature_columns(self.features_data))}")
+        logger.info(f"\nBase features created: {self.features_data.shape}")
+
+        # 🆕 NUOVO: Advanced features
+        if self.use_advanced_features:
+            logger.info("\n" + "=" * 60)
+            logger.info("ADDING ADVANCED FEATURES")
+            logger.info("=" * 60)
+
+            try:
+                self.features_data = integrate_with_existing_feature_engineer(
+                    self.features_data,
+                    self.config
+                )
+                logger.info(f"✓ Advanced features integrated: {self.features_data.shape}")
+            except Exception as e:
+                logger.error(f"✗ Advanced features failed: {e}")
+                logger.warning("Continuing with base features only")
+        else:
+            logger.info("Using base features only (install FeatureEngineering_IMPROVED.py for advanced)")
+
+        logger.info(f"\nTotal features: {len(self.feature_engineer.get_feature_columns(self.features_data))}")
 
         # VALIDATE FEATURES
         logger.info("\n--- Validating Features ---")
@@ -188,7 +228,7 @@ class StockPredictionSystem:
 
         # Choose prediction horizon
         horizons = self.config['prediction']['horizons']
-        primary_horizon = horizons[0]  # Use first horizon as primary
+        primary_horizon = horizons[0]
         target_col = f'Target_return_{primary_horizon}d'
 
         logger.info(f"Target variable: {target_col}")
@@ -238,9 +278,9 @@ class StockPredictionSystem:
         logger.info("Model training complete\n")
 
     def make_predictions(self):
-        """Generate predictions from all models"""
+        """Generate predictions from all models - UPGRADED"""
         logger.info("-" * 80)
-        logger.info("STEP 5: MAKING PREDICTIONS")
+        logger.info("STEP 5: MAKING PREDICTIONS (UPGRADED)")
         logger.info("-" * 80)
 
         feature_cols = self.feature_engineer.get_feature_columns(self.test_data)
@@ -255,10 +295,17 @@ class StockPredictionSystem:
             except Exception as e:
                 logger.error(f"Prediction failed for {name}: {e}")
 
-        # Ensemble predictions
+        # 🆕 UPGRADED: Ensemble with advanced features
         if self.config['models']['ensemble']['enabled'] and len(self.models) > 1:
             logger.info("\n--- Creating Ensemble ---")
-            self.ensemble = AdvancedEnsembleModel(self.config, self.models)
+
+            # Choose ensemble type
+            if self.use_advanced_ensemble:
+                logger.info("Using ADVANCED Ensemble (with calibration)")
+                self.ensemble = AdvancedEnsembleModel(self.config, self.models)
+            else:
+                logger.info("Using STANDARD Ensemble")
+                self.ensemble = EnsembleModel(self.config, self.models)
 
             # Optimize weights on validation set
             if self.config['models']['ensemble']['optimization']:
@@ -272,17 +319,36 @@ class StockPredictionSystem:
 
                 self.ensemble.optimize_weights(X_val, y_val)
 
+                # 🆕 NUOVO: Calibration (if advanced ensemble)
+                if self.use_advanced_ensemble:
+                    logger.info("\n--- Training Calibration ---")
+                    try:
+                        self.ensemble.train_calibration(X_val, y_val)
+                        logger.info("✓ Calibration trained successfully")
+                    except Exception as e:
+                        logger.error(f"Calibration failed: {e}")
+
             # Generate ensemble predictions
-            ensemble_pred = self.ensemble.predict(X_test, use_optimized_weights=True)
+            if self.use_advanced_ensemble:
+                # Use calibrated predictions
+                try:
+                    ensemble_pred = self.ensemble.predict_with_calibration(X_test)
+                    logger.info("✓ Using calibrated predictions")
+                except:
+                    ensemble_pred = self.ensemble.predict(X_test, use_optimized_weights=True)
+                    logger.warning("⚠ Calibration failed, using standard predictions")
+            else:
+                ensemble_pred = self.ensemble.predict(X_test, use_optimized_weights=True)
+
             self.predictions['Ensemble'] = ensemble_pred
 
         logger.info(f"\nPredictions generated for {len(self.predictions)} models")
         logger.info("Predictions complete\n")
 
     def evaluate_models(self):
-        """Evaluate all models on test set"""
+        """Evaluate all models on test set - UPGRADED"""
         logger.info("-" * 80)
-        logger.info("STEP 6: MODEL EVALUATION")
+        logger.info("STEP 6: MODEL EVALUATION (UPGRADED)")
         logger.info("-" * 80)
 
         feature_cols = self.feature_engineer.get_feature_columns(self.test_data)
@@ -302,7 +368,7 @@ class StockPredictionSystem:
             except Exception as e:
                 logger.error(f"Evaluation failed for {name}: {e}")
 
-        # Evaluate ensemble
+        # Evaluate ensemble (UPGRADED)
         if self.ensemble is not None:
             logger.info("\n--- Evaluating Ensemble ---")
             metrics = self.ensemble.evaluate(X_test, y_test, task='regression')
@@ -310,14 +376,17 @@ class StockPredictionSystem:
 
             # Compare models
             logger.info("\n--- Model Comparison ---")
-            comparison = self.ensemble.compare_models(X_test, y_test)
+            try:
+                comparison = self.ensemble.compare_models(X_test, y_test)
+            except Exception as e:
+                logger.warning(f"Model comparison failed: {e}")
 
         logger.info("\nModel evaluation complete\n")
 
     def test_prediction_quality(self):
         """Test rigoroso della qualità delle predizioni"""
         logger.info("-" * 80)
-        logger.info("STEP 6.5: PREDICTION QUALITY TESTING (RIGOROUS)")
+        logger.info("STEP 6.5: PREDICTION QUALITY TESTING")
         logger.info("-" * 80)
 
         horizons = self.config['prediction']['horizons']
@@ -330,7 +399,6 @@ class StockPredictionSystem:
             y_pred = self.predictions['Ensemble']
             model_name = 'Ensemble'
         else:
-            # Usa primo modello disponibile
             model_name = list(self.predictions.keys())[0]
             y_pred = self.predictions[model_name]
 
@@ -354,12 +422,11 @@ class StockPredictionSystem:
         logger.info("STEP 7: BACKTESTING")
         logger.info("-" * 80)
 
-        # Use ensemble predictions if available, otherwise best individual model
+        # Use ensemble predictions if available
         if 'Ensemble' in self.predictions:
             predictions = self.predictions['Ensemble']
             logger.info("Using Ensemble predictions for backtest")
         else:
-            # Use best model by R2
             best_model = max(self.metrics.items(), key=lambda x: x[1].get('R2', -999))
             predictions = self.predictions[best_model[0]]
             logger.info(f"Using {best_model[0]} predictions for backtest")
@@ -406,7 +473,7 @@ class StockPredictionSystem:
         predictions_df.to_csv('outputs/predictions.csv')
         logger.info("Saved: outputs/predictions.csv")
 
-        # Save feature importance (if available)
+        # Save feature importance
         for name, model in self.models.items():
             if hasattr(model, 'get_feature_importance'):
                 importance = model.get_feature_importance(top_n=30)
@@ -420,15 +487,38 @@ class StockPredictionSystem:
 
         logger.info("\nReport generation complete\n")
 
+    def generate_dashboard(self):
+        """
+        🆕 NUOVO: Generate interactive dashboard automatically
+        """
+        logger.info("-" * 80)
+        logger.info("STEP 9: GENERATING INTERACTIVE DASHBOARD")
+        logger.info("-" * 80)
+
+        try:
+            from analyze_results import PredictionAnalyzer
+
+            analyzer = PredictionAnalyzer('outputs')
+            report_path = analyzer.generate_full_report()
+
+            if report_path:
+                logger.info(f"\n✅ Interactive dashboard generated: {report_path}")
+                logger.info("📊 Open in browser for interactive analysis")
+                logger.info(f"   File: outputs/prediction_analysis.html")
+            else:
+                logger.warning("⚠ Dashboard generation failed")
+
+        except ImportError:
+            logger.warning("⚠ analyze_results.py not found - dashboard not generated")
+            logger.info("   Install analyze_results.py to enable automatic dashboard")
+        except Exception as e:
+            logger.error(f"✗ Dashboard generation error: {e}")
+
+        logger.info("\nDashboard generation complete\n")
+
     def predict_future(self, days_ahead=5):
         """
         Make future predictions (out of sample)
-
-        Args:
-            days_ahead: Number of days to predict ahead
-
-        Returns:
-            DataFrame with predictions for each stock
         """
         logger.info(f"\nGenerating predictions for {days_ahead} days ahead...")
 
@@ -437,20 +527,48 @@ class StockPredictionSystem:
         latest_data = self.features_data.groupby('Stock').tail(1)
         X_latest = latest_data[feature_cols]
 
-        # Get predictions from ensemble or best model
+        # Get predictions
         if self.ensemble is not None:
-            predictions, lower, upper, std = self.ensemble.predict_with_confidence(X_latest)
+            # 🆕 UPGRADED: Use calibrated predictions if available
+            if self.use_advanced_ensemble:
+                try:
+                    predictions, lower, upper, std = self.ensemble.predict_with_confidence_intervals(X_latest)
 
-            results = pd.DataFrame({
-                'Stock': latest_data['Stock'].values,
-                'Current_Price': latest_data['Close'].values,
-                'Predicted_Return': predictions,
-                'Predicted_Price': latest_data['Close'].values * (1 + predictions),
-                'Lower_Bound': latest_data['Close'].values * (1 + lower),
-                'Upper_Bound': latest_data['Close'].values * (1 + upper),
-                'Confidence_Std': std,
-                'Date': latest_data['Date'].values
-            })
+                    results = pd.DataFrame({
+                        'Stock': latest_data['Stock'].values,
+                        'Current_Price': latest_data['Close'].values,
+                        'Predicted_Return': predictions,
+                        'Predicted_Price': latest_data['Close'].values * (1 + predictions),
+                        'Lower_Bound': latest_data['Close'].values * (1 + lower),
+                        'Upper_Bound': latest_data['Close'].values * (1 + upper),
+                        'Date': latest_data['Date'].values
+                    })
+                except:
+                    # Fallback to standard
+                    predictions, lower, upper, std = self.ensemble.predict_with_confidence(X_latest)
+                    results = pd.DataFrame({
+                        'Stock': latest_data['Stock'].values,
+                        'Current_Price': latest_data['Close'].values,
+                        'Predicted_Return': predictions,
+                        'Predicted_Price': latest_data['Close'].values * (1 + predictions),
+                        'Lower_Bound': latest_data['Close'].values * (1 + lower),
+                        'Upper_Bound': latest_data['Close'].values * (1 + upper),
+                        'Confidence_Std': std,
+                        'Date': latest_data['Date'].values
+                    })
+            else:
+                # Standard ensemble
+                predictions, lower, upper, std = self.ensemble.predict_with_confidence(X_latest)
+                results = pd.DataFrame({
+                    'Stock': latest_data['Stock'].values,
+                    'Current_Price': latest_data['Close'].values,
+                    'Predicted_Return': predictions,
+                    'Predicted_Price': latest_data['Close'].values * (1 + predictions),
+                    'Lower_Bound': latest_data['Close'].values * (1 + lower),
+                    'Upper_Bound': latest_data['Close'].values * (1 + upper),
+                    'Confidence_Std': std,
+                    'Date': latest_data['Date'].values
+                })
         else:
             # Use best individual model
             best_model_name = max(self.metrics.items(), key=lambda x: x[1].get('R2', -999))[0]
@@ -476,9 +594,29 @@ class StockPredictionSystem:
 def main():
     """Main entry point"""
 
+    # Parse command line arguments
+    import argparse
+    parser = argparse.ArgumentParser(description='Stock Prediction System - Upgraded')
+    parser.add_argument('--config', type=str, default='configuration/config_advanced.yaml',
+                        help='Path to configuration file')
+    parser.add_argument('--no-dashboard', action='store_true',
+                        help='Skip automatic dashboard generation')
+    args = parser.parse_args()
+
     # Initialize system
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_path = os.path.join(base_dir, 'configuration', 'config_advanced.yaml')
+
+    # Use provided config or default
+    if not os.path.isabs(args.config):
+        config_path = os.path.join(base_dir, args.config)
+    else:
+        config_path = args.config
+
+    if not os.path.exists(config_path):
+        logger.error(f"Config file not found: {config_path}")
+        logger.info("Using default: configuration/config_advanced.yaml")
+        config_path = os.path.join(base_dir, 'configuration', 'config_advanced.yaml')
+
     system = StockPredictionSystem(config_path=config_path)
 
     # Run full pipeline
@@ -490,7 +628,13 @@ def main():
 
     logger.info("\n" + "=" * 80)
     logger.info("SYSTEM EXECUTION COMPLETE")
-    logger.info("Check outputs/ directory for results")
+    logger.info("=" * 80)
+    logger.info("\n📊 Results saved in outputs/ directory:")
+    logger.info("   - model_metrics.csv")
+    logger.info("   - predictions.csv")
+    logger.info("   - future_predictions.csv")
+    logger.info("   - prediction_analysis.html (interactive dashboard)")
+    logger.info("\n💡 Open prediction_analysis.html in browser for interactive analysis")
     logger.info("=" * 80)
 
 
