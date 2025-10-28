@@ -7,9 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1oT5Es-cZ11CnMSgc5K3e2N9uu93NLnA8
 """
 
-!pip install git+https://github.com/google-research/timesfm.git
-!pip install yfinance pandas numpy matplotlib
-
 """# Scarico la serie temporale"""
 
 import yfinance as yf
@@ -105,10 +102,10 @@ point_forecast, quantile_forecast = model.forecast(
 # Estrai i risultati (che sono su scala normalizzata)
 
 # <<< MODIFICA CHIAVE >>>
-# point_forecast[0] è GIÀ l'array 1D (90,) che ci serve. Rimuoviamo il [0] extra.
+# point_forecast[0] Ã¨ GIÃ€ l'array 1D (90,) che ci serve. Rimuoviamo il [0] extra.
 normalized_forecast_values_1d = point_forecast[0]
 
-# quantile_forecast[0] è l'array 2D (90, 10). Questo era corretto.
+# quantile_forecast[0] Ã¨ l'array 2D (90, 10). Questo era corretto.
 normalized_quantile_forecast_2d = quantile_forecast[0]
 
 
@@ -134,7 +131,7 @@ print("Forecast completato.")
 # (Ora il loop e il plot funzioneranno)
 
 print(f"\n--- Forecast Point-to-Point (Prossimi {ORIZZONTE_FORECAST} giorni) ---")
-# Questo loop ora stamperà 90 righe
+# Questo loop ora stamperÃ  90 righe
 for i, val in enumerate(forecast_values):
     print(f"Giorno T+{i+1}: {val:.2f} EUR")
 

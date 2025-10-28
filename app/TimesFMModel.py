@@ -3,7 +3,7 @@ import pandas as pd
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from configuration.Logger_config import setup_logger, logger
-
+import timesfm
 
 
 class TimesFMModel:
@@ -42,8 +42,6 @@ class TimesFMModel:
         logger.info(f"Loading TimesFM model: {self.model_name}")
 
         try:
-            import timesfm
-            import torch
 
             logger.info("timesfm library found, loading model...")
 
@@ -324,3 +322,15 @@ def create_timesfm_model(config):
     except Exception as e:
         logger.error(f"Failed to create TimesFM model: {e}")
         return None
+
+if __name__ == "__main__":
+    # Example usage
+    from configuration.Logger_config import load_config
+
+    config = load_config('config.yaml')
+    timesfm_model = create_timesfm_model(config)
+
+    if timesfm_model and timesfm_model.model:
+        print("TimesFM model loaded successfully.")
+    else:
+        print("TimesFM model not available.")
