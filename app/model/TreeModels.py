@@ -4,8 +4,9 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
 import xgboost as xgb
 import lightgbm as lgb
-import joblib
-from app.configuration.Logger_config import setup_logger, logger
+import logging
+
+logger = logging.getLogger('MarketPredictor')
 
 
 class TreeBasedModels:

@@ -3,27 +3,29 @@ import os
 from datetime import datetime
 import colorlog
 
-
 def setup_logger(name='MarketPredictor', log_level='INFO', log_file=None):
     """
-    Setup comprehensive logging system with colored console output
+    Setup comprehensive logging system with colored console output.
+    Called once (e.g., in main).
     """
-    # Crea logger
     logger = logging.getLogger(name)
+
+    # Se il logger ha già handler, non ricrearlo
+    if logger.handlers:
+        return logger
+
     logger.setLevel(getattr(logging, log_level.upper()))
+    logger.propagate = False
 
-    # Rimuovi eventuali handler esistenti
-    logger.handlers = []
-
-    # Formatter per file (senza colori)
+    # Formatter per file
     file_formatter = logging.Formatter(
-        '%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+        '%(asctime)s | %(filename)s | %(levelname)s | %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    # Formatter colorato per la console
+    # Formatter colorato per console
     color_formatter = colorlog.ColoredFormatter(
-        '%(log_color)s%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+        '%(log_color)s%(asctime)s | %(filename)s | %(levelname)s | %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
         log_colors={
             'DEBUG': 'cyan',
@@ -40,7 +42,7 @@ def setup_logger(name='MarketPredictor', log_level='INFO', log_file=None):
     console_handler.setFormatter(color_formatter)
     logger.addHandler(console_handler)
 
-    # File handler (solo se richiesto)
+    # File handler (se richiesto)
     if log_file:
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
         file_handler = logging.FileHandler(log_file)
@@ -49,15 +51,3 @@ def setup_logger(name='MarketPredictor', log_level='INFO', log_file=None):
         logger.addHandler(file_handler)
 
     return logger
-
-
-# Logger di default
-logger = setup_logger()
-
-if __name__ == "__main__":
-    # Esempio di log
-    logger.debug("Debug di prova")
-    logger.info("Operazione completata")
-    logger.warning("Attenzione: file mancante")
-    logger.error("Errore di connessione")
-    logger.critical("Errore critico di sistema")

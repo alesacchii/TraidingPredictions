@@ -2,7 +2,9 @@ import datetime
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from app.configuration.Logger_config import setup_logger, logger
+import logging
+
+logger = logging.getLogger('MarketPredictor')
 
 
 class MarketDataDownloader:

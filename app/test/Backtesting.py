@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
-from configuration.Logger_config import setup_logger, logger
+import logging
+
+logger = logging.getLogger('MarketPredictor')
 
 
 class Backtester:

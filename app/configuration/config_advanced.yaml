@@ -98,7 +98,7 @@ models:
       random_state: 42
 
   lstm:
-    enabled: false  # DISABLE until you confirm LSTM fix is applied
+    enabled: true  # DISABLE until you confirm LSTM fix is applied
     params:
       sequence_length: 60
       lstm_units: [128, 64, 32]
@@ -108,7 +108,7 @@ models:
       learning_rate: 0.001
 
   timesfm:
-    enabled: false  # Optional - enable only if you have GPU
+    enabled: true  # Optional - enable only if you have GPU
     model_name: "google/timesfm-2.5-200m-pytorch"
     params:
       context_length: 512

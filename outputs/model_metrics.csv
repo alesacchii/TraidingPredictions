@@ -1,6 +1,9 @@
-,MSE,RMSE,MAE,R2,Directional_Accuracy,Adaptive_Dir_Accuracy,Up_Days_Accuracy,Down_Days_Accuracy,verdict,pass_rate,passed_count,total_tests,passed_tests,failed_tests
-XGBoost,0.000915421655923202,0.03025593587914943,0.01989043099460971,-5.898350288258136e-05,,,,,,,,,,
-LightGBM,0.0009112966748190613,0.0301876907831497,0.019875393591460903,0.004447381824268515,,,,,,,,,,
-LSTM,0.0009176319673755603,0.030292440762928963,0.019839174161625978,-9.42061402287031e-06,,,,,,,,,,
-Ensemble,0.003475688879103475,0.058954973319504396,0.03459947592840886,-2.7970413578462465,0.5005714285714286,0.32342857142857145,0.564935064935065,0.42857142857142855,,,,,,
-Quality_Tests,,,,,,,,,POOR - Model predictions are weak,0.5,4,8,"['statistical_significance', 'prediction_stability', 'outlier_handling', 'economic_significance']","['basic_metrics', 'naive_comparison', 'directional_accuracy', 'residual_analysis']"
+,MSE,RMSE,MAE,R2,verdict,pass_rate,passed_count,total_tests,passed_tests,failed_tests,Total_Return,Annual_Return,Volatility,Sharpe_Ratio,Sortino_Ratio,Calmar_Ratio,Max_Drawdown,Win_Rate,Profit_Factor,Total_Trades,Avg_Win,Avg_Loss,Final_Value
+XGBoost,0.00026118693913488786,0.016161279006776903,0.011027684616666075,-0.03449599402574011,,,,,,,,,,,,,,,,,,,
+LightGBM,0.00026266580659236254,0.016206967840788806,0.011019039435820926,-0.0403534173161999,,,,,,,,,,,,,,,,,,,
+LSTM,0.0003435025175798653,0.01853382091150838,0.0122019011325942,-0.06723034304087516,,,,,,,,,,,,,,,,,,,
+TimesFM,0.0002529747105073592,0.015905178732329894,0.010932524767020954,-0.001969414996401797,,,,,,,,,,,,,,,,,,,
+Ensemble,0.0002588612768279192,0.016089166442918017,0.010950075428963287,-0.025284628603010173,,,,,,,,,,,,,,,,,,,
+Quality_Tests,,,,,POOR - Model predictions are weak,0.5,4,8,"['naive_comparison', 'directional_accuracy', 'outlier_handling', 'economic_significance']","['basic_metrics', 'statistical_significance', 'residual_analysis', 'prediction_stability']",,,,,,,,,,,,,
+Backtest_threshold_based,,,,,,,,,,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0
+Backtest_top_k,,,,,,,,,,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0

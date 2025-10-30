@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from app.configuration.Logger_config import setup_logger, logger
+import logging
+
+logger = logging.getLogger('MarketPredictor')
 import timesfm
 
 

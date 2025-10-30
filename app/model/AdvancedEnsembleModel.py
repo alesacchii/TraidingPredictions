@@ -15,12 +15,10 @@ import os
 # Import base EnsembleModel
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from EnsembleModel import EnsembleModel
+import logging
 
-try:
-    from app.configuration.Logger_config import setup_logger, logger
-except:
-    import logging
-    logger = logging.getLogger(__name__)
+logger = logging.getLogger('MarketPredictor')
+
 
 
 class AdvancedEnsembleModel(EnsembleModel):

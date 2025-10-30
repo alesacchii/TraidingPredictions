@@ -4,7 +4,9 @@ from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers, callbacks
-from app.configuration.Logger_config import setup_logger, logger
+import logging
+
+logger = logging.getLogger('MarketPredictor')
 
 
 class LSTMModel:

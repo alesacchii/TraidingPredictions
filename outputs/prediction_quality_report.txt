@@ -5,62 +5,62 @@ PREDICTION QUALITY TEST REPORT
 
 BASIC METRICS
 ----------------------------------------
-RMSE: 0.058954973319504396
-MAE: 0.03459947592840886
-R2: -2.7970413578462465
-MAPE: 470.50793332841437
-Correlation: 0.10152940631847275
+RMSE: 0.016089166442918017
+MAE: 0.010950075428963287
+R2: -0.025284628603010173
+MAPE: 108.88819590718069
+Correlation: 0.03363323425634897
 passed: False
 
 NAIVE COMPARISON
 ----------------------------------------
-RMSE_model: 0.058954973319504396
-RMSE_naive: 0.03362932798522741
-Improvement_%: -75.30821117032718
-passed: False
+RMSE_model: 0.016089166442918017
+RMSE_naive: 0.021318974945731886
+Improvement_%: 24.53123809248104
+passed: True
 
 DIRECTIONAL ACCURACY
 ----------------------------------------
-Overall: 0.5005714285714286
-Up_Days: 0.564935064935065
-Down_Days: 0.42857142857142855
-Improvement_vs_Random_%: 0.11428571428571122
-passed: False
+Overall: 0.5838926174496645
+Up_Days: 1.0
+Down_Days: 0.0
+Improvement_vs_Random_%: 16.778523489932894
+passed: True
 
 STATISTICAL SIGNIFICANCE
 ----------------------------------------
-T_statistic: 0.09160110824097864
-P_value: 0.9270359609627339
-Correlation_P_value: 0.002640482528160959
-Significant_at_5%: True
-Significant_at_1%: True
-passed: True
+T_statistic: -1.9673832387431076
+P_value: 0.05100861430606928
+Correlation_P_value: 0.6838584260520357
+Significant_at_5%: False
+Significant_at_1%: False
+passed: False
 
 RESIDUAL ANALYSIS
 ----------------------------------------
-Mean: -0.00018266837871561085
-Std: 0.05895469032542613
-Normality_P_value: 1.0588299269371176e-33
-Durbin_Watson: 0.8145786608313785
+Mean: 0.0025685360277277075
+Std: 0.015882817744411224
+Normality_P_value: 3.136170851513718e-08
+Durbin_Watson: 1.7484338937832828
 Residuals_Normal: False
-No_Autocorrelation: False
+No_Autocorrelation: True
 passed: False
 
 PREDICTION STABILITY
 ----------------------------------------
-Pred_Volatility: 0.053764218445991024
-True_Volatility: 0.030255043618080183
-Volatility_Ratio: 1.777033248560975
-Avg_Pred_Change: 0.02218602789869105
-Avg_True_Change: 0.023396160461302662
-passed: True
+Pred_Volatility: 0.0002660455195677681
+True_Volatility: 0.015889539879328344
+Volatility_Ratio: 0.016743437606641
+Avg_Pred_Change: 8.435173186375163e-05
+Avg_True_Change: 0.015707631212985698
+passed: False
 
 OUTLIER HANDLING
 ----------------------------------------
-N_Outliers: 9
-Outlier_%: 1.0285714285714285
-Normal_MAE: 0.031014159864141914
-Outlier_MAE: 0.37958655500120553
+N_Outliers: 2
+Outlier_%: 1.342281879194631
+Normal_MAE: 0.010152680829986783
+Outlier_MAE: 0.06955857845373628
 passed: True
 
 ================================================================================

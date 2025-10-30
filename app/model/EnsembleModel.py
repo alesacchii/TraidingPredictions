@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from scipy.optimize import minimize
+import logging
+logger = logging.getLogger('MarketPredictor')
 
 
 class EnsembleModel:
