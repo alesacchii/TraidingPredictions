@@ -1,0 +1,31 @@
+,feature,importance
+0,Returns_1d,0.0
+85,ParkinsonVol_5,0.0
+99,Doji,0.0
+98,Upper_Shadow,0.0
+97,Body_Size,0.0
+96,Vol_Spike,0.0
+95,VolOfVol_60,0.0
+94,ParkinsonVol_60,0.0
+93,RealizedVol_60,0.0
+92,VolOfVol_20,0.0
+91,ParkinsonVol_20,0.0
+90,RealizedVol_20,0.0
+89,VolOfVol_10,0.0
+88,ParkinsonVol_10,0.0
+87,RealizedVol_10,0.0
+86,VolOfVol_5,0.0
+84,RealizedVol_5,0.0
+101,Shooting_Star,0.0
+83,Regime_Change,0.0
+82,Market_Regime,0.0
+81,Trend_Strength,0.0
+80,ADX,0.0
+79,VIXCLS,0.0
+78,DGS10,0.0
+77,FEDFUNDS,0.0
+76,VIX_change,0.0
+75,Correlation_SPY,0.0
+74,SPY_returns,0.0
+73,10Y Treasury Yield,0.0
+72,Dollar Index,0.0

@@ -496,7 +496,7 @@ class StockPredictionSystem:
         logger.info("-" * 80)
 
         try:
-            from analyze_results import PredictionAnalyzer
+            from outputs.analyze_results import PredictionAnalyzer
 
             analyzer = PredictionAnalyzer('outputs')
             report_path = analyzer.generate_full_report()
