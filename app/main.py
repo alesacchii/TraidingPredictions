@@ -300,6 +300,8 @@ class StockPredictionSystem:
         y_test_clean = y_test[mask]
 
         logger.info(f"Removed {len(X_test) - len(X_test_clean)} rows with NaN from test set")
+        X_test_clean.to_csv('X_test_clean.csv', index=False)
+        y_test_clean.to_csv('y_test_clean.csv', index=False)
         # Evaluate each model
         for name, model in self.models.items():
             logger.info(f"\n--- Evaluating {name} ---")

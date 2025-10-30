@@ -1662,3 +1662,304 @@ Predictions generated for 3 models
 ================================================================================
 2025-10-30 15:03:50 | main.py | ERROR | PIPELINE FAILED: Input contains NaN.
 2025-10-30 15:03:50 | main.py | ERROR | ================================================================================
+2025-10-30 15:23:01 | main.py | INFO | ================================================================================
+2025-10-30 15:23:01 | main.py | INFO | STOCK MARKET PREDICTION SYSTEM
+2025-10-30 15:23:01 | main.py | INFO | ================================================================================
+2025-10-30 15:23:01 | main.py | INFO | Configuration loaded from C:\Users\alesa\PycharmProjects\TraidingPredictions\app\configuration\config_advanced.yaml
+2025-10-30 15:23:01 | main.py | INFO | 
+================================================================================
+2025-10-30 15:23:01 | main.py | INFO | STARTING FULL PREDICTION PIPELINE
+2025-10-30 15:23:01 | main.py | INFO | ================================================================================
+
+2025-10-30 15:23:01 | main.py | INFO | 
+--------------------------------------------------------------------------------
+2025-10-30 15:23:01 | main.py | INFO | STEP 1: DATA DOWNLOAD
+2025-10-30 15:23:01 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:01 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:01 | DownloadMarketData.py | INFO | STARTING COMPREHENSIVE DATA DOWNLOAD
+2025-10-30 15:23:01 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:01 | DownloadMarketData.py | INFO | Downloading stock data for 2 symbols...
+2025-10-30 15:23:01 | DownloadMarketData.py | INFO | Period: 2020-01-01 to 2025-10-30
+2025-10-30 15:23:02 | DownloadMarketData.py | INFO | Downloaded 2930 rows
+2025-10-30 15:23:02 | DownloadMarketData.py | INFO | Date range: 2020-01-02 00:00:00 to 2025-10-29 00:00:00
+2025-10-30 15:23:02 | DownloadMarketData.py | INFO | Stocks: ['AAPL', 'GOOGL']
+2025-10-30 15:23:02 | DownloadMarketData.py | INFO | Downloading market indices...
+2025-10-30 15:23:02 | DownloadMarketData.py | INFO | Downloaded S&P 500: 1465 rows
+2025-10-30 15:23:03 | DownloadMarketData.py | INFO | Downloaded VIX: 1465 rows
+2025-10-30 15:23:03 | DownloadMarketData.py | INFO | Downloaded Dollar Index: 1467 rows
+2025-10-30 15:23:04 | DownloadMarketData.py | INFO | Downloaded 10Y Treasury Yield: 1465 rows
+2025-10-30 15:23:04 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:04 | DownloadMarketData.py | INFO | DATA DOWNLOAD COMPLETE
+2025-10-30 15:23:04 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:04 | main.py | INFO | 
+Stock data shape: (2930, 7)
+2025-10-30 15:23:04 | main.py | INFO | Data download complete
+
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | STEP 2: FEATURE ENGINEERING
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | Features created: (2930, 55)
+2025-10-30 15:23:04 | main.py | INFO | Number of features: 50
+2025-10-30 15:23:04 | main.py | INFO | Feature engineering complete
+
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | STEP 3: DATA SPLITTING
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | Train set: 2051 samples (2020-01-02 00:00:00 to 2024-01-30 00:00:00)
+2025-10-30 15:23:04 | main.py | INFO | Val set:   439 samples (2024-01-30 00:00:00 to 2024-12-11 00:00:00)
+2025-10-30 15:23:04 | main.py | INFO | Test set:  440 samples (2024-12-12 00:00:00 to 2025-10-29 00:00:00)
+2025-10-30 15:23:04 | main.py | INFO | Data splitting complete
+
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | STEP 4: MODEL TRAINING
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | Target variable: Target_return_1d
+2025-10-30 15:23:04 | main.py | INFO | Number of features: 50
+
+2025-10-30 15:23:04 | main.py | INFO | 
+--- Training XGBoost ---
+2025-10-30 15:23:04 | TreeModels.py | INFO | Training xgboost model for regression...
+2025-10-30 15:23:04 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 15:23:04 | TreeModels.py | INFO | XGBoost training complete. Best iteration: 27
+2025-10-30 15:23:04 | main.py | INFO | 
+--- Training LightGBM ---
+2025-10-30 15:23:04 | TreeModels.py | INFO | Training lightgbm model for regression...
+2025-10-30 15:23:04 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 15:23:04 | TreeModels.py | INFO | LightGBM training complete. Best iteration: 1
+2025-10-30 15:23:04 | main.py | INFO | 
+Trained 2 models successfully
+2025-10-30 15:23:04 | main.py | INFO | Model training complete
+
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | STEP 5: MAKING PREDICTIONS
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | Generating predictions from XGBoost...
+2025-10-30 15:23:04 | main.py | INFO | Generating predictions from LightGBM...
+2025-10-30 15:23:04 | main.py | INFO | 
+--- Creating Ensemble ---
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Optimizing with 2 models and 439 valid samples
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Weight optimization successful:
+2025-10-30 15:23:04 | EnsembleModel.py | INFO |   XGBoost: 0.5000
+2025-10-30 15:23:04 | EnsembleModel.py | INFO |   LightGBM: 0.5000
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Ensemble RMSE with optimized weights: 0.016303
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:23:04 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:23:04 | main.py | INFO | 
+Predictions generated for 3 models
+2025-10-30 15:23:04 | main.py | INFO | Predictions complete
+
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | STEP 6: MODEL EVALUATION
+2025-10-30 15:23:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:04 | main.py | INFO | Removed 2 rows with NaN from test set
+2025-10-30 15:23:04 | main.py | ERROR | 
+================================================================================
+2025-10-30 15:23:04 | main.py | ERROR | PIPELINE FAILED: Cannot save file into a non-existent directory: 'CheckOutputs'
+2025-10-30 15:23:04 | main.py | ERROR | ================================================================================
+2025-10-30 15:23:40 | main.py | INFO | ================================================================================
+2025-10-30 15:23:40 | main.py | INFO | STOCK MARKET PREDICTION SYSTEM
+2025-10-30 15:23:40 | main.py | INFO | ================================================================================
+2025-10-30 15:23:40 | main.py | INFO | Configuration loaded from C:\Users\alesa\PycharmProjects\TraidingPredictions\app\configuration\config_advanced.yaml
+2025-10-30 15:23:40 | main.py | INFO | 
+================================================================================
+2025-10-30 15:23:40 | main.py | INFO | STARTING FULL PREDICTION PIPELINE
+2025-10-30 15:23:40 | main.py | INFO | ================================================================================
+
+2025-10-30 15:23:40 | main.py | INFO | 
+--------------------------------------------------------------------------------
+2025-10-30 15:23:40 | main.py | INFO | STEP 1: DATA DOWNLOAD
+2025-10-30 15:23:40 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:40 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:40 | DownloadMarketData.py | INFO | STARTING COMPREHENSIVE DATA DOWNLOAD
+2025-10-30 15:23:40 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:40 | DownloadMarketData.py | INFO | Downloading stock data for 2 symbols...
+2025-10-30 15:23:40 | DownloadMarketData.py | INFO | Period: 2020-01-01 to 2025-10-30
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Downloaded 2930 rows
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Date range: 2020-01-02 00:00:00 to 2025-10-29 00:00:00
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Stocks: ['AAPL', 'GOOGL']
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Downloading market indices...
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Downloaded S&P 500: 1465 rows
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Downloaded VIX: 1465 rows
+2025-10-30 15:23:42 | DownloadMarketData.py | INFO | Downloaded Dollar Index: 1467 rows
+2025-10-30 15:23:43 | DownloadMarketData.py | INFO | Downloaded 10Y Treasury Yield: 1465 rows
+2025-10-30 15:23:43 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:43 | DownloadMarketData.py | INFO | DATA DOWNLOAD COMPLETE
+2025-10-30 15:23:43 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:23:43 | main.py | INFO | 
+Stock data shape: (2930, 7)
+2025-10-30 15:23:43 | main.py | INFO | Data download complete
+
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | STEP 2: FEATURE ENGINEERING
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | Features created: (2930, 55)
+2025-10-30 15:23:43 | main.py | INFO | Number of features: 50
+2025-10-30 15:23:43 | main.py | INFO | Feature engineering complete
+
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | STEP 3: DATA SPLITTING
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | Train set: 2051 samples (2020-01-02 00:00:00 to 2024-01-30 00:00:00)
+2025-10-30 15:23:43 | main.py | INFO | Val set:   439 samples (2024-01-30 00:00:00 to 2024-12-11 00:00:00)
+2025-10-30 15:23:43 | main.py | INFO | Test set:  440 samples (2024-12-12 00:00:00 to 2025-10-29 00:00:00)
+2025-10-30 15:23:43 | main.py | INFO | Data splitting complete
+
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | STEP 4: MODEL TRAINING
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | Target variable: Target_return_1d
+2025-10-30 15:23:43 | main.py | INFO | Number of features: 50
+
+2025-10-30 15:23:43 | main.py | INFO | 
+--- Training XGBoost ---
+2025-10-30 15:23:43 | TreeModels.py | INFO | Training xgboost model for regression...
+2025-10-30 15:23:43 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 15:23:43 | TreeModels.py | INFO | XGBoost training complete. Best iteration: 27
+2025-10-30 15:23:43 | main.py | INFO | 
+--- Training LightGBM ---
+2025-10-30 15:23:43 | TreeModels.py | INFO | Training lightgbm model for regression...
+2025-10-30 15:23:43 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 15:23:43 | TreeModels.py | INFO | LightGBM training complete. Best iteration: 1
+2025-10-30 15:23:43 | main.py | INFO | 
+Trained 2 models successfully
+2025-10-30 15:23:43 | main.py | INFO | Model training complete
+
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | STEP 5: MAKING PREDICTIONS
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | Generating predictions from XGBoost...
+2025-10-30 15:23:43 | main.py | INFO | Generating predictions from LightGBM...
+2025-10-30 15:23:43 | main.py | INFO | 
+--- Creating Ensemble ---
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Optimizing with 2 models and 439 valid samples
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Weight optimization successful:
+2025-10-30 15:23:43 | EnsembleModel.py | INFO |   XGBoost: 0.5000
+2025-10-30 15:23:43 | EnsembleModel.py | INFO |   LightGBM: 0.5000
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Ensemble RMSE with optimized weights: 0.016303
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:23:43 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:23:43 | main.py | INFO | 
+Predictions generated for 3 models
+2025-10-30 15:23:43 | main.py | INFO | Predictions complete
+
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | STEP 6: MODEL EVALUATION
+2025-10-30 15:23:43 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:23:43 | main.py | INFO | Removed 2 rows with NaN from test set
+2025-10-30 15:23:43 | main.py | ERROR | 
+================================================================================
+2025-10-30 15:23:43 | main.py | ERROR | PIPELINE FAILED: Cannot save file into a non-existent directory: 'CheckOutputs'
+2025-10-30 15:23:43 | main.py | ERROR | ================================================================================
+2025-10-30 15:24:02 | main.py | INFO | ================================================================================
+2025-10-30 15:24:02 | main.py | INFO | STOCK MARKET PREDICTION SYSTEM
+2025-10-30 15:24:02 | main.py | INFO | ================================================================================
+2025-10-30 15:24:02 | main.py | INFO | Configuration loaded from C:\Users\alesa\PycharmProjects\TraidingPredictions\app\configuration\config_advanced.yaml
+2025-10-30 15:24:02 | main.py | INFO | 
+================================================================================
+2025-10-30 15:24:02 | main.py | INFO | STARTING FULL PREDICTION PIPELINE
+2025-10-30 15:24:02 | main.py | INFO | ================================================================================
+
+2025-10-30 15:24:02 | main.py | INFO | 
+--------------------------------------------------------------------------------
+2025-10-30 15:24:02 | main.py | INFO | STEP 1: DATA DOWNLOAD
+2025-10-30 15:24:02 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:02 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:24:02 | DownloadMarketData.py | INFO | STARTING COMPREHENSIVE DATA DOWNLOAD
+2025-10-30 15:24:02 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:24:02 | DownloadMarketData.py | INFO | Downloading stock data for 2 symbols...
+2025-10-30 15:24:02 | DownloadMarketData.py | INFO | Period: 2020-01-01 to 2025-10-30
+2025-10-30 15:24:03 | DownloadMarketData.py | INFO | Downloaded 2930 rows
+2025-10-30 15:24:03 | DownloadMarketData.py | INFO | Date range: 2020-01-02 00:00:00 to 2025-10-29 00:00:00
+2025-10-30 15:24:03 | DownloadMarketData.py | INFO | Stocks: ['AAPL', 'GOOGL']
+2025-10-30 15:24:03 | DownloadMarketData.py | INFO | Downloading market indices...
+2025-10-30 15:24:03 | DownloadMarketData.py | INFO | Downloaded S&P 500: 1465 rows
+2025-10-30 15:24:03 | DownloadMarketData.py | INFO | Downloaded VIX: 1465 rows
+2025-10-30 15:24:04 | DownloadMarketData.py | INFO | Downloaded Dollar Index: 1467 rows
+2025-10-30 15:24:04 | DownloadMarketData.py | INFO | Downloaded 10Y Treasury Yield: 1465 rows
+2025-10-30 15:24:04 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:24:04 | DownloadMarketData.py | INFO | DATA DOWNLOAD COMPLETE
+2025-10-30 15:24:04 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 15:24:04 | main.py | INFO | 
+Stock data shape: (2930, 7)
+2025-10-30 15:24:04 | main.py | INFO | Data download complete
+
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | STEP 2: FEATURE ENGINEERING
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | Features created: (2930, 55)
+2025-10-30 15:24:04 | main.py | INFO | Number of features: 50
+2025-10-30 15:24:04 | main.py | INFO | Feature engineering complete
+
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | STEP 3: DATA SPLITTING
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | Train set: 2051 samples (2020-01-02 00:00:00 to 2024-01-30 00:00:00)
+2025-10-30 15:24:04 | main.py | INFO | Val set:   439 samples (2024-01-30 00:00:00 to 2024-12-11 00:00:00)
+2025-10-30 15:24:04 | main.py | INFO | Test set:  440 samples (2024-12-12 00:00:00 to 2025-10-29 00:00:00)
+2025-10-30 15:24:04 | main.py | INFO | Data splitting complete
+
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | STEP 4: MODEL TRAINING
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | Target variable: Target_return_1d
+2025-10-30 15:24:04 | main.py | INFO | Number of features: 50
+
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Training XGBoost ---
+2025-10-30 15:24:04 | TreeModels.py | INFO | Training xgboost model for regression...
+2025-10-30 15:24:04 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 15:24:04 | TreeModels.py | INFO | XGBoost training complete. Best iteration: 27
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Training LightGBM ---
+2025-10-30 15:24:04 | TreeModels.py | INFO | Training lightgbm model for regression...
+2025-10-30 15:24:04 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 15:24:04 | TreeModels.py | INFO | LightGBM training complete. Best iteration: 1
+2025-10-30 15:24:04 | main.py | INFO | 
+Trained 2 models successfully
+2025-10-30 15:24:04 | main.py | INFO | Model training complete
+
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | STEP 5: MAKING PREDICTIONS
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | Generating predictions from XGBoost...
+2025-10-30 15:24:04 | main.py | INFO | Generating predictions from LightGBM...
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Creating Ensemble ---
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Optimizing with 2 models and 439 valid samples
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Weight optimization successful:
+2025-10-30 15:24:04 | EnsembleModel.py | INFO |   XGBoost: 0.5000
+2025-10-30 15:24:04 | EnsembleModel.py | INFO |   LightGBM: 0.5000
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Ensemble RMSE with optimized weights: 0.016303
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:24:04 | main.py | INFO | 
+Predictions generated for 3 models
+2025-10-30 15:24:04 | main.py | INFO | Predictions complete
+
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | STEP 6: MODEL EVALUATION
+2025-10-30 15:24:04 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 15:24:04 | main.py | INFO | Removed 2 rows with NaN from test set
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Evaluating XGBoost ---
+2025-10-30 15:24:04 | TreeModels.py | INFO | Evaluation - RMSE: 0.021061, MAE: 0.014349, R2: -0.0001
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Evaluating LightGBM ---
+2025-10-30 15:24:04 | TreeModels.py | INFO | Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0002
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Evaluating Ensemble ---
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 15:24:04 | EnsembleModel.py | INFO | Ensemble Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0001
+2025-10-30 15:24:04 | main.py | INFO | 
+--- Model Comparison ---
+2025-10-30 15:24:04 | main.py | ERROR | 
+================================================================================
+2025-10-30 15:24:04 | main.py | ERROR | PIPELINE FAILED: Input contains NaN.
+2025-10-30 15:24:04 | main.py | ERROR | ================================================================================
