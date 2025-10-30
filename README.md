@@ -99,12 +99,12 @@ start outputs\prediction_analysis.html
 
 2. **Genera dashboard:**
    ```bash
-   python app/analyze_results.py outputs
+   python app/analyze_results.py CheckOutputs
    ```
 
 3. **Apri in browser:**
    ```bash
-   start outputs/prediction_analysis.html
+   start CheckOutputs/prediction_analysis.html
    ```
 
 4. **Analizza grafici interattivi:**
@@ -197,10 +197,10 @@ python app/main.py --config configuration/config_optimized.yaml
 python app/main.py --config configuration/config_optimized.yaml
 
 # 2. Analisi automatica
-python app/analyze_results.py outputs
+python app/analyze_results.py CheckOutputs
 
 # 3. Visualizza dashboard
-start outputs/prediction_analysis.html
+start CheckOutputs/prediction_analysis.html
 
 # 4. Se risultati buoni:
 #    - Trading con predizioni
@@ -333,7 +333,7 @@ python app/main.py  # con EnsembleModel_FIXED
 outputs_old/model_metrics.csv
 
 # Con upgrade (dopo)
-outputs/model_metrics.csv
+CheckOutputs/model_metrics.csv
 
 # Confronta R², RMSE, Directional Accuracy
 ```

@@ -174,7 +174,7 @@ class EnsembleModel:
         predictions_df = self.collect_predictions(X)
 
         if predictions_df is None or predictions_df.empty:
-            print("ERROR: Cannot make predictions - no model outputs available")
+            print("ERROR: Cannot make predictions - no model CheckOutputs available")
             return None
 
         # Determine weights

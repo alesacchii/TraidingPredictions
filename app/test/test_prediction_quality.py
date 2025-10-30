@@ -442,7 +442,7 @@ class PredictionQualityTester:
             'failed_tests': failed_tests
         }
 
-    def generate_report(self, filepath='outputs/prediction_quality_report.txt'):
+    def generate_report(self, filepath='CheckOutputs/prediction_quality_report.txt'):
         """Genera report dettagliato"""
         import os
         os.makedirs(os.path.dirname(filepath), exist_ok=True)

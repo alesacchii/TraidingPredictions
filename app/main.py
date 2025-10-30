@@ -341,7 +341,7 @@ class StockPredictionSystem:
         results, verdict = tester.run_all_tests()
 
         # Salva report
-        tester.generate_report('outputs/prediction_quality_report.txt')
+        tester.generate_report('CheckOutputs/prediction_quality_report.txt')
 
         # Aggiungi al metrics
         self.metrics['Quality_Tests'] = verdict
@@ -391,29 +391,29 @@ class StockPredictionSystem:
         logger.info("STEP 8: GENERATING REPORT")
         logger.info("-" * 80)
 
-        os.makedirs('outputs', exist_ok=True)
+        os.makedirs('CheckOutputs', exist_ok=True)
 
         # Save metrics
         metrics_df = pd.DataFrame(self.metrics).T
-        metrics_df.to_csv('outputs/model_metrics.csv')
-        logger.info("Saved: outputs/model_metrics.csv")
+        metrics_df.to_csv('CheckOutputs/model_metrics.csv')
+        logger.info("Saved: CheckOutputs/model_metrics.csv")
 
         # Save predictions
         predictions_df = pd.DataFrame(self.predictions)
-        predictions_df.to_csv('outputs/predictions.csv')
-        logger.info("Saved: outputs/predictions.csv")
+        predictions_df.to_csv('CheckOutputs/predictions.csv')
+        logger.info("Saved: CheckOutputs/predictions.csv")
 
         # Save feature importance
         for name, model in self.models.items():
             if hasattr(model, 'get_feature_importance'):
                 importance = model.get_feature_importance(top_n=30)
                 if importance is not None:
-                    importance.to_csv(f'outputs/feature_importance_{name}.csv')
-                    logger.info(f"Saved: outputs/feature_importance_{name}.csv")
+                    importance.to_csv(f'CheckOutputs/feature_importance_{name}.csv')
+                    logger.info(f"Saved: CheckOutputs/feature_importance_{name}.csv")
 
         # Save processed data
-        self.features_data.to_csv('outputs/features_data.csv', index=False)
-        logger.info("Saved: outputs/features_data.csv")
+        self.features_data.to_csv('CheckOutputs/features_data.csv', index=False)
+        logger.info("Saved: CheckOutputs/features_data.csv")
 
         logger.info("\nReport generation complete\n")
 
@@ -468,11 +468,11 @@ def main():
     metrics = system.run_full_pipeline()
 
     future_predictions = system.predict_future(days_ahead=5)
-    future_predictions.to_csv('outputs/future_predictions.csv', index=False)
+    future_predictions.to_csv('CheckOutputs/future_predictions.csv', index=False)
 
     logger.info("\n" + "=" * 80)
     logger.info("SYSTEM EXECUTION COMPLETE")
-    logger.info("Check outputs/ directory for results")
+    logger.info("Check CheckOutputs/ directory for results")
     logger.info("=" * 80)
 
 
