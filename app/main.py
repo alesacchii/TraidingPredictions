@@ -1,27 +1,24 @@
 import os
-import sys
 import yaml
 import pandas as pd
-import numpy as np
-from datetime import datetime
 import warnings
 
 warnings.filterwarnings('ignore')
 
 # Import custom modules
-from configuration.Logger_config import setup_logger, logger
-from DownloadMarketData import MarketDataDownloader
-from FeatureEngineering import FeatureEngineer
-from TreeModels import TreeBasedModels, TimeSeriesCV
-from LSTMModel import LSTMModel
-from TimesFMModel import TimesFMModel
-from Backtesting import Backtester
-from test_prediction_quality import PredictionQualityTester
-from feature_validator import FeatureValidator
+from configuration.Logger_config import logger
+from app.data.DownloadMarketData import MarketDataDownloader
+from app.data.FeatureEngineering import FeatureEngineer
+from app.model.TreeModels import TreeBasedModels
+from app.model.LSTMModel import LSTMModel
+from app.model.TimesFMModel import TimesFMModel
+from app.test.Backtesting import Backtester
+from app.test.test_prediction_quality import PredictionQualityTester
+from app.data.feature_validator import FeatureValidator
 
 # 🆕 NUOVO: Import componenti avanzati
 try:
-    from FeatureEngineering_IMPROVED import integrate_with_existing_feature_engineer
+    from app.data.FeatureEngineering_IMPROVED import integrate_with_existing_feature_engineer
 
     ADVANCED_FEATURES_AVAILABLE = True
     logger.info("✓ Advanced features module available")
@@ -30,14 +27,14 @@ except ImportError:
     logger.warning("⚠ Advanced features module not found - using basic features only")
 
 try:
-    from EnsembleModel_ADVANCED import AdvancedEnsembleModel
+    from app.model.EnsembleModel_ADVANCED import AdvancedEnsembleModel
 
     ADVANCED_ENSEMBLE_AVAILABLE = True
     logger.info("✓ Advanced ensemble module available")
 except ImportError:
     ADVANCED_ENSEMBLE_AVAILABLE = False
     logger.warning("⚠ Advanced ensemble not found - using standard ensemble")
-    from EnsembleModel import EnsembleModel
+    from app.model.EnsembleModel import EnsembleModel
 
 
 class StockPredictionSystem:
