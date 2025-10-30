@@ -1,0 +1,68 @@
+================================================================================
+PREDICTION QUALITY TEST REPORT
+================================================================================
+
+
+BASIC METRICS
+----------------------------------------
+RMSE: 0.021061905064204783
+MAE: 0.014349698887535607
+R2: -0.00013177168264988381
+MAPE: 104.59756801017586
+Correlation: -0.05031543662750151
+passed: False
+
+NAIVE COMPARISON
+----------------------------------------
+RMSE_model: 0.021061905064204783
+RMSE_naive: 0.02594766844974954
+Improvement_%: 18.829296339309117
+passed: True
+
+DIRECTIONAL ACCURACY
+----------------------------------------
+Overall: 0.5365296803652968
+Up_Days: 1.0
+Down_Days: 0.0
+Improvement_vs_Random_%: 7.30593607305936
+passed: True
+
+STATISTICAL SIGNIFICANCE
+----------------------------------------
+T_statistic: -0.1868327760371212
+P_value: 0.8518784530318616
+Correlation_P_value: 0.293405344729214
+Significant_at_5%: False
+Significant_at_1%: False
+passed: False
+
+RESIDUAL ANALYSIS
+----------------------------------------
+Mean: 0.00018823165237132403
+Std: 0.021061063927983806
+Normality_P_value: 2.2368066057817095e-15
+Durbin_Watson: 1.5171610386654721
+Residuals_Normal: False
+No_Autocorrelation: True
+passed: True
+
+PREDICTION STABILITY
+----------------------------------------
+Pred_Volatility: 1.080470595972539e-05
+True_Volatility: 0.021060517519997494
+Volatility_Ratio: 0.0005130313606712679
+Avg_Pred_Change: 9.630256121062353e-06
+Avg_True_Change: 0.018058994449477537
+passed: False
+
+OUTLIER HANDLING
+----------------------------------------
+N_Outliers: 7
+Outlier_%: 1.5981735159817352
+Normal_MAE: 0.013066783133788226
+Outlier_MAE: 0.09334065458255295
+passed: True
+
+================================================================================
+END OF REPORT
+================================================================================

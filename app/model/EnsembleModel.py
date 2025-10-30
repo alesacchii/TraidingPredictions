@@ -300,7 +300,7 @@ class EnsembleModel:
 
     def compare_models(self, X, y):
         """
-        Compare individual model performances
+        Compare individual model performances - FIXED VERSION
         """
         predictions_df = self.collect_predictions(X)
 
@@ -309,21 +309,32 @@ class EnsembleModel:
 
         comparison = {}
 
-        # Convert y to numpy
+        # Convert y to numpy array properly
         if hasattr(y, 'values'):
-            y_array = y.values
+            y_array = y.values.flatten()
         else:
-            y_array = np.array(y)
+            y_array = np.array(y).flatten()
 
-        # Reset index of predictions_df
+        # Reset index to ensure alignment
         predictions_df = predictions_df.reset_index(drop=True)
 
-        # Remove NaN for fair comparison
+        # Find rows where ALL data is valid (no NaN in any column or y)
         valid_mask = ~predictions_df.isna().any(axis=1).values
+        valid_mask = valid_mask & ~np.isnan(y_array)
+
+        if valid_mask.sum() < 10:
+            logger.error(f"Too few valid samples: {valid_mask.sum()}")
+            return None
+
         y_clean = y_array[valid_mask]
 
         for model_name in predictions_df.columns:
             pred = predictions_df[model_name][valid_mask].values
+
+            # Additional check for NaN in predictions
+            if np.any(np.isnan(pred)):
+                logger.warning(f"NaN found in {model_name} predictions after filtering")
+                continue
 
             rmse = np.sqrt(mean_squared_error(y_clean, pred))
             mae = mean_absolute_error(y_clean, pred)
@@ -338,23 +349,31 @@ class EnsembleModel:
         # Add ensemble
         ensemble_pred = self.predict(X)
         if ensemble_pred is not None:
-            ensemble_pred_array = np.array(ensemble_pred)
-            valid_ensemble = ~np.isnan(ensemble_pred_array) & valid_mask
-            if valid_ensemble.sum() > 0:
-                rmse = np.sqrt(mean_squared_error(y_array[valid_ensemble], ensemble_pred_array[valid_ensemble]))
-                mae = mean_absolute_error(y_array[valid_ensemble], ensemble_pred_array[valid_ensemble])
-                r2 = r2_score(y_array[valid_ensemble], ensemble_pred_array[valid_ensemble])
+            ensemble_pred_array = np.array(ensemble_pred).flatten()
 
-                comparison['Ensemble'] = {
-                    'RMSE': rmse,
-                    'MAE': mae,
-                    'R2': r2
-                }
+            # Use same valid mask
+            if len(ensemble_pred_array) == len(valid_mask):
+                ensemble_valid = ensemble_pred_array[valid_mask]
 
-        df_comparison = pd.DataFrame(comparison).T
-        df_comparison = df_comparison.sort_values('RMSE')
+                if not np.any(np.isnan(ensemble_valid)):
+                    rmse = np.sqrt(mean_squared_error(y_clean, ensemble_valid))
+                    mae = mean_absolute_error(y_clean, ensemble_valid)
+                    r2 = r2_score(y_clean, ensemble_valid)
 
-        print("\nModel Comparison:")
-        print(f"\n{df_comparison}")
+                    comparison['Ensemble'] = {
+                        'RMSE': rmse,
+                        'MAE': mae,
+                        'R2': r2
+                    }
 
-        return df_comparison
+        if comparison:
+            df_comparison = pd.DataFrame(comparison).T
+            df_comparison = df_comparison.sort_values('RMSE')
+
+            print("\nModel Comparison:")
+            print(f"\n{df_comparison}")
+
+            return df_comparison
+        else:
+            logger.error("No valid comparisons could be made")
+            return None

@@ -2077,3 +2077,608 @@ Predictions generated for 3 models
 ================================================================================
 2025-10-30 16:32:37 | main.py | ERROR | PIPELINE FAILED: Input contains NaN.
 2025-10-30 16:32:37 | main.py | ERROR | ================================================================================
+2025-10-30 16:37:15 | main.py | INFO | ================================================================================
+2025-10-30 16:37:15 | main.py | INFO | STOCK MARKET PREDICTION SYSTEM
+2025-10-30 16:37:15 | main.py | INFO | ================================================================================
+2025-10-30 16:37:15 | main.py | INFO | Configuration loaded from C:\Users\alesa\PycharmProjects\TraidingPredictions\app\configuration\config_advanced.yaml
+2025-10-30 16:37:15 | main.py | INFO | 
+================================================================================
+2025-10-30 16:37:15 | main.py | INFO | STARTING FULL PREDICTION PIPELINE
+2025-10-30 16:37:15 | main.py | INFO | ================================================================================
+
+2025-10-30 16:37:15 | main.py | INFO | 
+--------------------------------------------------------------------------------
+2025-10-30 16:37:15 | main.py | INFO | STEP 1: DATA DOWNLOAD
+2025-10-30 16:37:15 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:15 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:37:15 | DownloadMarketData.py | INFO | STARTING COMPREHENSIVE DATA DOWNLOAD
+2025-10-30 16:37:15 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:37:15 | DownloadMarketData.py | INFO | Downloading stock data for 2 symbols...
+2025-10-30 16:37:15 | DownloadMarketData.py | INFO | Period: 2020-01-01 to 2025-10-30
+2025-10-30 16:37:16 | DownloadMarketData.py | INFO | Downloaded 2930 rows
+2025-10-30 16:37:16 | DownloadMarketData.py | INFO | Date range: 2020-01-02 00:00:00 to 2025-10-29 00:00:00
+2025-10-30 16:37:16 | DownloadMarketData.py | INFO | Stocks: ['AAPL', 'GOOGL']
+2025-10-30 16:37:16 | DownloadMarketData.py | INFO | Downloading market indices...
+2025-10-30 16:37:16 | DownloadMarketData.py | INFO | Downloaded S&P 500: 1465 rows
+2025-10-30 16:37:17 | DownloadMarketData.py | INFO | Downloaded VIX: 1465 rows
+2025-10-30 16:37:17 | DownloadMarketData.py | INFO | Downloaded Dollar Index: 1467 rows
+2025-10-30 16:37:17 | DownloadMarketData.py | INFO | Downloaded 10Y Treasury Yield: 1465 rows
+2025-10-30 16:37:17 | DownloadMarketData.py | INFO | Attempting to download economic data...
+2025-10-30 16:37:17 | DownloadMarketData.py | INFO | No economic indicators configured
+2025-10-30 16:37:17 | DownloadMarketData.py | INFO | Attempting to download news sentiment...
+2025-10-30 16:37:18 | DownloadMarketData.py | INFO | Retrieved 100 articles for AAPL
+2025-10-30 16:37:19 | DownloadMarketData.py | INFO | Retrieved 99 articles for GOOGL
+2025-10-30 16:37:19 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:37:19 | DownloadMarketData.py | INFO | DATA DOWNLOAD COMPLETE
+2025-10-30 16:37:19 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:37:19 | main.py | INFO | 
+Stock data shape: (2930, 7)
+2025-10-30 16:37:19 | main.py | INFO | Data download complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 2: FEATURE ENGINEERING
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Features created: (2930, 55)
+2025-10-30 16:37:19 | main.py | INFO | Number of features: 50
+2025-10-30 16:37:19 | main.py | INFO | Feature engineering complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 3: DATA SPLITTING
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Train set: 2051 samples (2020-01-02 00:00:00 to 2024-01-30 00:00:00)
+2025-10-30 16:37:19 | main.py | INFO | Val set:   439 samples (2024-01-30 00:00:00 to 2024-12-11 00:00:00)
+2025-10-30 16:37:19 | main.py | INFO | Test set:  440 samples (2024-12-12 00:00:00 to 2025-10-29 00:00:00)
+2025-10-30 16:37:19 | main.py | INFO | Data splitting complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 4: MODEL TRAINING
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Target variable: Target_return_1d
+2025-10-30 16:37:19 | main.py | INFO | Number of features: 50
+
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Training XGBoost ---
+2025-10-30 16:37:19 | TreeModels.py | INFO | Training xgboost model for regression...
+2025-10-30 16:37:19 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 16:37:19 | TreeModels.py | INFO | XGBoost training complete. Best iteration: 27
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Training LightGBM ---
+2025-10-30 16:37:19 | TreeModels.py | INFO | Training lightgbm model for regression...
+2025-10-30 16:37:19 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 16:37:19 | TreeModels.py | INFO | LightGBM training complete. Best iteration: 1
+2025-10-30 16:37:19 | main.py | INFO | 
+Trained 2 models successfully
+2025-10-30 16:37:19 | main.py | INFO | Model training complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 5: MAKING PREDICTIONS
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Generating predictions from XGBoost...
+2025-10-30 16:37:19 | main.py | INFO | Generating predictions from LightGBM...
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Creating Ensemble ---
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Optimizing with 2 models and 439 valid samples
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Weight optimization successful:
+2025-10-30 16:37:19 | EnsembleModel.py | INFO |   XGBoost: 0.5000
+2025-10-30 16:37:19 | EnsembleModel.py | INFO |   LightGBM: 0.5000
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Ensemble RMSE with optimized weights: 0.016303
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:37:19 | main.py | INFO | 
+Predictions generated for 3 models
+2025-10-30 16:37:19 | main.py | INFO | Predictions complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 6: MODEL EVALUATION
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Removed 2 rows with NaN from test set
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Evaluating XGBoost ---
+2025-10-30 16:37:19 | TreeModels.py | INFO | Evaluation - RMSE: 0.021061, MAE: 0.014349, R2: -0.0001
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Evaluating LightGBM ---
+2025-10-30 16:37:19 | TreeModels.py | INFO | Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0002
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Evaluating Ensemble ---
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Ensemble Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0001
+2025-10-30 16:37:19 | main.py | INFO | 
+--- Model Comparison ---
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:37:19 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:37:19 | main.py | INFO | 
+Model evaluation complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 6.5: PREDICTION QUALITY TESTING
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Testing predictions from: Ensemble
+
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | PREDICTION QUALITY TEST SUITE - STARTING
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 1: Basic Metrics ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | RMSE: 0.021062
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | MAE: 0.014350
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | R²: -0.0001
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | MAPE: 104.60%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Correlation: -0.0503
+2025-10-30 16:37:19 | test_prediction_quality.py | WARNING | FAIL: Metrics are too poor (R² < 0.10 or Correlation < 0.30)
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 2: Better than Naive Baseline ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Model RMSE: 0.021062
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Naive RMSE: 0.025948
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Improvement: +18.83%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | PASS: Model is 18.8% better than naive
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 3: Directional Accuracy ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Overall Directional Accuracy: 53.65%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Up Days Accuracy: 100.00%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Down Days Accuracy: 0.00%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | vs Random (50%): +7.31%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | PASS: Directional accuracy 53.7% > 52%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 4: Statistical Significance ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | T-statistic: -0.1868
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | P-value: 0.8519
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Correlation P-value: 0.2934
+2025-10-30 16:37:19 | test_prediction_quality.py | WARNING | FAIL: Predictions are NOT statistically significant
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 5: Residual Analysis ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Residuals Mean: 0.000188
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Residuals Std: 0.021061
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Normality P-value: 0.0000
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Durbin-Watson: 1.5172
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | PASS: Residuals are well-behaved
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 6: Prediction Stability ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Prediction Volatility: 0.000011
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | True Volatility: 0.021061
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Volatility Ratio: 0.0005
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Avg Prediction Change: 0.000010
+2025-10-30 16:37:19 | test_prediction_quality.py | WARNING | WARNING: Predictions volatility unusual (0.00)
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 7: Outlier Handling ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Outliers detected: 7 (1.60%)
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | MAE on normal points: 0.013067
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | MAE on outliers: 0.093341
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | PASS: Outlier percentage acceptable (1.6%)
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+--- TEST 8: Economic Significance ---
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Threshold 0.001: Total Return=0.5453, Trades=438, WinRate=53.65%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Threshold 0.005: Total Return=0.0000, Trades=0, WinRate=0.00%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Threshold 0.010: Total Return=0.0000, Trades=0, WinRate=0.00%
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | PASS: Predictions can generate positive returns (0.5453)
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | 
+================================================================================
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | FINAL VERDICT
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Tests Passed: 5/8 (62%)
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Passed: naive_comparison, directional_accuracy, residual_analysis, outlier_handling, economic_significance
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Failed: basic_metrics, statistical_significance, prediction_stability
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | ACCEPTABLE - Model predictions are marginally useful
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:37:19 | test_prediction_quality.py | INFO | Report saved to CheckOutputs/prediction_quality_report.txt
+2025-10-30 16:37:19 | main.py | INFO | 
+Prediction quality testing complete
+
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | STEP 7: BACKTESTING
+2025-10-30 16:37:19 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:37:19 | main.py | INFO | Using Ensemble predictions for backtest
+2025-10-30 16:37:19 | main.py | ERROR | 
+================================================================================
+2025-10-30 16:37:19 | main.py | ERROR | PIPELINE FAILED: "['Close'] not in index"
+2025-10-30 16:37:19 | main.py | ERROR | ================================================================================
+2025-10-30 16:42:08 | main.py | INFO | ================================================================================
+2025-10-30 16:42:08 | main.py | INFO | STOCK MARKET PREDICTION SYSTEM
+2025-10-30 16:42:08 | main.py | INFO | ================================================================================
+2025-10-30 16:42:08 | main.py | INFO | Configuration loaded from C:\Users\alesa\PycharmProjects\TraidingPredictions\app\configuration\config_advanced.yaml
+2025-10-30 16:42:08 | main.py | INFO | 
+================================================================================
+2025-10-30 16:42:08 | main.py | INFO | STARTING FULL PREDICTION PIPELINE
+2025-10-30 16:42:08 | main.py | INFO | ================================================================================
+
+2025-10-30 16:42:08 | main.py | INFO | 
+--------------------------------------------------------------------------------
+2025-10-30 16:42:08 | main.py | INFO | STEP 1: DATA DOWNLOAD
+2025-10-30 16:42:08 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | STARTING COMPREHENSIVE DATA DOWNLOAD
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | Downloading stock data for 2 symbols...
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | Period: 2020-01-01 to 2025-10-30
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | Downloaded 2930 rows
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | Date range: 2020-01-02 00:00:00 to 2025-10-29 00:00:00
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | Stocks: ['AAPL', 'GOOGL']
+2025-10-30 16:42:08 | DownloadMarketData.py | INFO | Downloading market indices...
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | Downloaded S&P 500: 1465 rows
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | Downloaded VIX: 1465 rows
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | Downloaded Dollar Index: 1467 rows
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | Downloaded 10Y Treasury Yield: 1465 rows
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | Attempting to download economic data...
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | No economic indicators configured
+2025-10-30 16:42:09 | DownloadMarketData.py | INFO | Attempting to download news sentiment...
+2025-10-30 16:42:11 | DownloadMarketData.py | INFO | Retrieved 100 articles for AAPL
+2025-10-30 16:42:11 | DownloadMarketData.py | INFO | Retrieved 99 articles for GOOGL
+2025-10-30 16:42:11 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:42:11 | DownloadMarketData.py | INFO | DATA DOWNLOAD COMPLETE
+2025-10-30 16:42:11 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:42:11 | main.py | INFO | 
+Stock data shape: (2930, 7)
+2025-10-30 16:42:11 | main.py | INFO | Data download complete
+
+2025-10-30 16:42:11 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:11 | main.py | INFO | STEP 2: FEATURE ENGINEERING
+2025-10-30 16:42:11 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:11 | main.py | INFO | Features created: (2930, 55)
+2025-10-30 16:42:11 | main.py | INFO | Number of features: 50
+2025-10-30 16:42:11 | main.py | INFO | Feature engineering complete
+
+2025-10-30 16:42:11 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:11 | main.py | INFO | STEP 3: DATA SPLITTING
+2025-10-30 16:42:11 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:11 | main.py | INFO | Train set: 2051 samples (2020-01-02 00:00:00 to 2024-01-30 00:00:00)
+2025-10-30 16:42:11 | main.py | INFO | Val set:   439 samples (2024-01-30 00:00:00 to 2024-12-11 00:00:00)
+2025-10-30 16:42:11 | main.py | INFO | Test set:  440 samples (2024-12-12 00:00:00 to 2025-10-29 00:00:00)
+2025-10-30 16:42:11 | main.py | INFO | Data splitting complete
+
+2025-10-30 16:42:11 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:11 | main.py | INFO | STEP 4: MODEL TRAINING
+2025-10-30 16:42:11 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:11 | main.py | INFO | Target variable: Target_return_1d
+2025-10-30 16:42:11 | main.py | INFO | Number of features: 50
+
+2025-10-30 16:42:11 | main.py | INFO | 
+--- Training XGBoost ---
+2025-10-30 16:42:11 | TreeModels.py | INFO | Training xgboost model for regression...
+2025-10-30 16:42:11 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 16:42:12 | TreeModels.py | INFO | XGBoost training complete. Best iteration: 27
+2025-10-30 16:42:12 | main.py | INFO | 
+--- Training LightGBM ---
+2025-10-30 16:42:12 | TreeModels.py | INFO | Training lightgbm model for regression...
+2025-10-30 16:42:12 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 16:42:12 | TreeModels.py | INFO | LightGBM training complete. Best iteration: 1
+2025-10-30 16:42:12 | main.py | INFO | 
+Trained 2 models successfully
+2025-10-30 16:42:12 | main.py | INFO | Model training complete
+
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | STEP 5: MAKING PREDICTIONS
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | Generating predictions from XGBoost...
+2025-10-30 16:42:12 | main.py | INFO | Generating predictions from LightGBM...
+2025-10-30 16:42:12 | main.py | INFO | 
+--- Creating Ensemble ---
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Optimizing with 2 models and 439 valid samples
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Weight optimization successful:
+2025-10-30 16:42:12 | EnsembleModel.py | INFO |   XGBoost: 0.5000
+2025-10-30 16:42:12 | EnsembleModel.py | INFO |   LightGBM: 0.5000
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Ensemble RMSE with optimized weights: 0.016303
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:42:12 | main.py | INFO | 
+Predictions generated for 3 models
+2025-10-30 16:42:12 | main.py | INFO | Predictions complete
+
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | STEP 6: MODEL EVALUATION
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | Removed 2 rows with NaN from test set
+2025-10-30 16:42:12 | main.py | INFO | 
+--- Evaluating XGBoost ---
+2025-10-30 16:42:12 | TreeModels.py | INFO | Evaluation - RMSE: 0.021061, MAE: 0.014349, R2: -0.0001
+2025-10-30 16:42:12 | main.py | INFO | 
+--- Evaluating LightGBM ---
+2025-10-30 16:42:12 | TreeModels.py | INFO | Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0002
+2025-10-30 16:42:12 | main.py | INFO | 
+--- Evaluating Ensemble ---
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Ensemble Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0001
+2025-10-30 16:42:12 | main.py | INFO | 
+--- Model Comparison ---
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:42:12 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:42:12 | main.py | INFO | 
+Model evaluation complete
+
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | STEP 6.5: PREDICTION QUALITY TESTING
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | Testing predictions from: Ensemble
+
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | PREDICTION QUALITY TEST SUITE - STARTING
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 1: Basic Metrics ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | RMSE: 0.021062
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | MAE: 0.014350
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | R²: -0.0001
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | MAPE: 104.60%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Correlation: -0.0503
+2025-10-30 16:42:12 | test_prediction_quality.py | WARNING | FAIL: Metrics are too poor (R² < 0.10 or Correlation < 0.30)
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 2: Better than Naive Baseline ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Model RMSE: 0.021062
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Naive RMSE: 0.025948
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Improvement: +18.83%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | PASS: Model is 18.8% better than naive
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 3: Directional Accuracy ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Overall Directional Accuracy: 53.65%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Up Days Accuracy: 100.00%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Down Days Accuracy: 0.00%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | vs Random (50%): +7.31%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | PASS: Directional accuracy 53.7% > 52%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 4: Statistical Significance ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | T-statistic: -0.1868
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | P-value: 0.8519
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Correlation P-value: 0.2934
+2025-10-30 16:42:12 | test_prediction_quality.py | WARNING | FAIL: Predictions are NOT statistically significant
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 5: Residual Analysis ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Residuals Mean: 0.000188
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Residuals Std: 0.021061
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Normality P-value: 0.0000
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Durbin-Watson: 1.5172
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | PASS: Residuals are well-behaved
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 6: Prediction Stability ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Prediction Volatility: 0.000011
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | True Volatility: 0.021061
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Volatility Ratio: 0.0005
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Avg Prediction Change: 0.000010
+2025-10-30 16:42:12 | test_prediction_quality.py | WARNING | WARNING: Predictions volatility unusual (0.00)
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 7: Outlier Handling ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Outliers detected: 7 (1.60%)
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | MAE on normal points: 0.013067
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | MAE on outliers: 0.093341
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | PASS: Outlier percentage acceptable (1.6%)
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+--- TEST 8: Economic Significance ---
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Threshold 0.001: Total Return=0.5453, Trades=438, WinRate=53.65%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Threshold 0.005: Total Return=0.0000, Trades=0, WinRate=0.00%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Threshold 0.010: Total Return=0.0000, Trades=0, WinRate=0.00%
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | PASS: Predictions can generate positive returns (0.5453)
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | 
+================================================================================
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | FINAL VERDICT
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Tests Passed: 5/8 (62%)
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Passed: naive_comparison, directional_accuracy, residual_analysis, outlier_handling, economic_significance
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Failed: basic_metrics, statistical_significance, prediction_stability
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | ACCEPTABLE - Model predictions are marginally useful
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:42:12 | test_prediction_quality.py | INFO | Report saved to CheckOutputs/prediction_quality_report.txt
+2025-10-30 16:42:12 | main.py | INFO | 
+Prediction quality testing complete
+
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | STEP 7: BACKTESTING
+2025-10-30 16:42:12 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:42:12 | main.py | INFO | Using Ensemble predictions for backtest
+2025-10-30 16:42:12 | main.py | ERROR | 
+================================================================================
+2025-10-30 16:42:12 | main.py | ERROR | PIPELINE FAILED: 'Date'
+2025-10-30 16:42:12 | main.py | ERROR | ================================================================================
+2025-10-30 16:46:18 | main.py | INFO | ================================================================================
+2025-10-30 16:46:18 | main.py | INFO | STOCK MARKET PREDICTION SYSTEM
+2025-10-30 16:46:18 | main.py | INFO | ================================================================================
+2025-10-30 16:46:18 | main.py | INFO | Configuration loaded from C:\Users\alesa\PycharmProjects\TraidingPredictions\app\configuration\config_advanced.yaml
+2025-10-30 16:46:18 | main.py | INFO | 
+================================================================================
+2025-10-30 16:46:18 | main.py | INFO | STARTING FULL PREDICTION PIPELINE
+2025-10-30 16:46:18 | main.py | INFO | ================================================================================
+
+2025-10-30 16:46:18 | main.py | INFO | 
+--------------------------------------------------------------------------------
+2025-10-30 16:46:18 | main.py | INFO | STEP 1: DATA DOWNLOAD
+2025-10-30 16:46:18 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | STARTING COMPREHENSIVE DATA DOWNLOAD
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | Downloading stock data for 2 symbols...
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | Period: 2020-01-01 to 2025-10-30
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | Downloaded 2930 rows
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | Date range: 2020-01-02 00:00:00 to 2025-10-29 00:00:00
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | Stocks: ['AAPL', 'GOOGL']
+2025-10-30 16:46:18 | DownloadMarketData.py | INFO | Downloading market indices...
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | Downloaded S&P 500: 1465 rows
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | Downloaded VIX: 1465 rows
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | Downloaded Dollar Index: 1467 rows
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | Downloaded 10Y Treasury Yield: 1465 rows
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | Attempting to download economic data...
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | No economic indicators configured
+2025-10-30 16:46:19 | DownloadMarketData.py | INFO | Attempting to download news sentiment...
+2025-10-30 16:46:21 | DownloadMarketData.py | INFO | Retrieved 100 articles for AAPL
+2025-10-30 16:46:21 | DownloadMarketData.py | INFO | Retrieved 99 articles for GOOGL
+2025-10-30 16:46:22 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:46:22 | DownloadMarketData.py | INFO | DATA DOWNLOAD COMPLETE
+2025-10-30 16:46:22 | DownloadMarketData.py | INFO | ================================================================================
+2025-10-30 16:46:22 | main.py | INFO | 
+Stock data shape: (2930, 7)
+2025-10-30 16:46:22 | main.py | INFO | Data download complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 2: FEATURE ENGINEERING
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Features created: (2930, 55)
+2025-10-30 16:46:22 | main.py | INFO | Number of features: 50
+2025-10-30 16:46:22 | main.py | INFO | Feature engineering complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 3: DATA SPLITTING
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Train set: 2051 samples (2020-01-02 00:00:00 to 2024-01-30 00:00:00)
+2025-10-30 16:46:22 | main.py | INFO | Val set:   439 samples (2024-01-30 00:00:00 to 2024-12-11 00:00:00)
+2025-10-30 16:46:22 | main.py | INFO | Test set:  440 samples (2024-12-12 00:00:00 to 2025-10-29 00:00:00)
+2025-10-30 16:46:22 | main.py | INFO | Data splitting complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 4: MODEL TRAINING
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Target variable: Target_return_1d
+2025-10-30 16:46:22 | main.py | INFO | Number of features: 50
+
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Training XGBoost ---
+2025-10-30 16:46:22 | TreeModels.py | INFO | Training xgboost model for regression...
+2025-10-30 16:46:22 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 16:46:22 | TreeModels.py | INFO | XGBoost training complete. Best iteration: 27
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Training LightGBM ---
+2025-10-30 16:46:22 | TreeModels.py | INFO | Training lightgbm model for regression...
+2025-10-30 16:46:22 | TreeModels.py | INFO | Training samples: 2051, Features: 50
+2025-10-30 16:46:22 | TreeModels.py | INFO | LightGBM training complete. Best iteration: 1
+2025-10-30 16:46:22 | main.py | INFO | 
+Trained 2 models successfully
+2025-10-30 16:46:22 | main.py | INFO | Model training complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 5: MAKING PREDICTIONS
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Generating predictions from XGBoost...
+2025-10-30 16:46:22 | main.py | INFO | Generating predictions from LightGBM...
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Creating Ensemble ---
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Optimizing with 2 models and 439 valid samples
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Weight optimization successful:
+2025-10-30 16:46:22 | EnsembleModel.py | INFO |   XGBoost: 0.5000
+2025-10-30 16:46:22 | EnsembleModel.py | INFO |   LightGBM: 0.5000
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Ensemble RMSE with optimized weights: 0.016303
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:46:22 | main.py | INFO | 
+Predictions generated for 3 models
+2025-10-30 16:46:22 | main.py | INFO | Predictions complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 6: MODEL EVALUATION
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Removed 2 rows with NaN from test set
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Evaluating XGBoost ---
+2025-10-30 16:46:22 | TreeModels.py | INFO | Evaluation - RMSE: 0.021061, MAE: 0.014349, R2: -0.0001
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Evaluating LightGBM ---
+2025-10-30 16:46:22 | TreeModels.py | INFO | Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0002
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Evaluating Ensemble ---
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Ensemble Evaluation - RMSE: 0.021062, MAE: 0.014350, R2: -0.0001
+2025-10-30 16:46:22 | main.py | INFO | 
+--- Model Comparison ---
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from XGBoost
+2025-10-30 16:46:22 | EnsembleModel.py | INFO | Collected predictions from LightGBM
+2025-10-30 16:46:22 | main.py | INFO | 
+Model evaluation complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 6.5: PREDICTION QUALITY TESTING
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Testing predictions from: Ensemble
+
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | PREDICTION QUALITY TEST SUITE - STARTING
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 1: Basic Metrics ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | RMSE: 0.021062
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | MAE: 0.014350
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | R²: -0.0001
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | MAPE: 104.60%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Correlation: -0.0503
+2025-10-30 16:46:22 | test_prediction_quality.py | WARNING | FAIL: Metrics are too poor (R² < 0.10 or Correlation < 0.30)
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 2: Better than Naive Baseline ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Model RMSE: 0.021062
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Naive RMSE: 0.025948
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Improvement: +18.83%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | PASS: Model is 18.8% better than naive
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 3: Directional Accuracy ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Overall Directional Accuracy: 53.65%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Up Days Accuracy: 100.00%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Down Days Accuracy: 0.00%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | vs Random (50%): +7.31%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | PASS: Directional accuracy 53.7% > 52%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 4: Statistical Significance ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | T-statistic: -0.1868
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | P-value: 0.8519
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Correlation P-value: 0.2934
+2025-10-30 16:46:22 | test_prediction_quality.py | WARNING | FAIL: Predictions are NOT statistically significant
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 5: Residual Analysis ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Residuals Mean: 0.000188
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Residuals Std: 0.021061
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Normality P-value: 0.0000
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Durbin-Watson: 1.5172
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | PASS: Residuals are well-behaved
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 6: Prediction Stability ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Prediction Volatility: 0.000011
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | True Volatility: 0.021061
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Volatility Ratio: 0.0005
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Avg Prediction Change: 0.000010
+2025-10-30 16:46:22 | test_prediction_quality.py | WARNING | WARNING: Predictions volatility unusual (0.00)
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 7: Outlier Handling ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Outliers detected: 7 (1.60%)
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | MAE on normal points: 0.013067
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | MAE on outliers: 0.093341
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | PASS: Outlier percentage acceptable (1.6%)
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+--- TEST 8: Economic Significance ---
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Threshold 0.001: Total Return=0.5453, Trades=438, WinRate=53.65%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Threshold 0.005: Total Return=0.0000, Trades=0, WinRate=0.00%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Threshold 0.010: Total Return=0.0000, Trades=0, WinRate=0.00%
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | PASS: Predictions can generate positive returns (0.5453)
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | 
+================================================================================
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | FINAL VERDICT
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Tests Passed: 5/8 (62%)
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Passed: naive_comparison, directional_accuracy, residual_analysis, outlier_handling, economic_significance
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Failed: basic_metrics, statistical_significance, prediction_stability
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | ACCEPTABLE - Model predictions are marginally useful
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | ================================================================================
+2025-10-30 16:46:22 | test_prediction_quality.py | INFO | Report saved to CheckOutputs/prediction_quality_report.txt
+2025-10-30 16:46:22 | main.py | INFO | 
+Prediction quality testing complete
+
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 7: BACKTESTING (SKIPPED)
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Backtest temporarily disabled to focus on improving R²
+2025-10-30 16:46:22 | main.py | INFO | Once predictions improve, backtest can be re-enabled
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | STEP 8: GENERATING REPORT
+2025-10-30 16:46:22 | main.py | INFO | --------------------------------------------------------------------------------
+2025-10-30 16:46:22 | main.py | INFO | Saved: CheckOutputs/model_metrics.csv
+2025-10-30 16:46:22 | main.py | INFO | Saved: CheckOutputs/predictions.csv
+2025-10-30 16:46:22 | main.py | INFO | Saved: CheckOutputs/feature_importance_XGBoost.csv
+2025-10-30 16:46:22 | main.py | INFO | Saved: CheckOutputs/feature_importance_LightGBM.csv
+2025-10-30 16:46:22 | main.py | INFO | Saved: CheckOutputs/features_data.csv
+2025-10-30 16:46:22 | main.py | INFO | 
+Report generation complete
+
+2025-10-30 16:46:22 | main.py | INFO | 
+================================================================================
+2025-10-30 16:46:22 | main.py | INFO | PIPELINE COMPLETE
+2025-10-30 16:46:22 | main.py | INFO | ================================================================================
+2025-10-30 16:46:22 | main.py | INFO | 
+Generating predictions for 5 days ahead...

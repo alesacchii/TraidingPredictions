@@ -1,0 +1,6 @@
+,MSE,RMSE,MAE,R2,verdict,pass_rate,passed_count,total_tests,passed_tests,failed_tests,Skipped
+XGBoost,0.00044358080078411914,0.021061357999524133,0.014349002509084788,-7.981725014083452e-05,,,,,,,
+LightGBM,0.000443627122577905,0.021062457657593167,0.014350431669315359,-0.00018425254351273068,,,,,,,
+Ensemble,,0.021061905064204783,0.014349698887535607,-0.00013177168264988381,,,,,,,
+Quality_Tests,,,,,ACCEPTABLE - Model predictions are marginally useful,0.625,5,8,"['naive_comparison', 'directional_accuracy', 'residual_analysis', 'outlier_handling', 'economic_significance']","['basic_metrics', 'statistical_significance', 'prediction_stability']",
+Backtest_Status,,,,,,,,,,,True

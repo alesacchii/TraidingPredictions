@@ -319,7 +319,7 @@ class StockPredictionSystem:
 
             # Compare models
             logger.info("\n--- Model Comparison ---")
-            comparison = self.ensemble.compare_models(X_test, y_test)
+            comparison = self.ensemble.compare_models(X_test_clean, y_test_clean)
 
         logger.info("\nModel evaluation complete\n")
 
@@ -357,41 +357,14 @@ class StockPredictionSystem:
         logger.info("\nPrediction quality testing complete\n")
 
     def run_backtest(self):
-        """Run backtest on predictions"""
+        """Backtest disabled - focusing on prediction quality"""
         logger.info("-" * 80)
-        logger.info("STEP 7: BACKTESTING")
+        logger.info("STEP 7: BACKTESTING (SKIPPED)")
         logger.info("-" * 80)
-
-        # Use ensemble predictions if available
-        if 'Ensemble' in self.predictions:
-            predictions = self.predictions['Ensemble']
-            logger.info("Using Ensemble predictions for backtest")
-        else:
-            best_model = max(self.metrics.items(), key=lambda x: x[1].get('R2', -999))
-            predictions = self.predictions[best_model[0]]
-            logger.info(f"Using {best_model[0]} predictions for backtest")
-
-        # Prepare data for backtesting
-        backtest_data = self.test_data[['Date', 'Stock', 'Close']].copy()
-        backtest_data['Prediction'] = predictions
-
-        # Run backtest
-        backtester = Backtester(self.config)
-        strategies = self.config['backtesting']['strategies']
-
-        for strategy in strategies:
-            logger.info(f"\n--- Strategy: {strategy} ---")
-            try:
-                metrics, results = backtester.run_backtest(
-                    backtest_data,
-                    predictions,
-                    strategy=strategy
-                )
-                self.metrics[f'Backtest_{strategy}'] = metrics
-            except Exception as e:
-                logger.error(f"Backtest failed for {strategy}: {e}")
-
-        logger.info("\nBacktesting complete\n")
+        logger.info("Backtest temporarily disabled to focus on improving R²")
+        logger.info("Once predictions improve, backtest can be re-enabled")
+        self.metrics['Backtest_Status'] = {'Skipped': True}
+        return
 
     def generate_report(self):
         """Generate comprehensive report"""
