@@ -47,6 +47,11 @@ features:
   advanced_features:
     enabled: false  # Use our improved feature engineering instead
 
+  sentiment:
+    enabled: true  # Use our improved feature engineering instead
+
+  macro_economic:
+    enabled: true  # Use our improved feature engineering instead
 
   feature_selection:
     enabled: true
