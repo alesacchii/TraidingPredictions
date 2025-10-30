@@ -1,132 +1,114 @@
-# OPTIMIZED CONFIGURATION
-# Based on analysis of prediction results
-# Fixes critical issues:
-# 1. R² ≈ 0 → More data, better features, regularization
-# 2. Flat predictions → Calibration, adaptive thresholds
-# 3. 0% down accuracy → Asymmetric thresholds, class balancing
+# Market Prediction System Configuration - FIXED VERSION
 
 data_download:
   stocks_list:
     - AAPL
     - GOOGL
-    - META
-    - NVDA
-    - TSLA
-  start_date: '2018-01-01'  # Più storia (7 anni invece di 5)
-  end_date: null
+    # Start with just 2 stocks for testing - add more later
+  start_date: '2022-01-01'  # 3 years only for faster testing
+  end_date: null  # null = today
 
+# Feature Engineering
 features:
-  # Basic technical (esistenti)
   technical_indicators:
+    # Trend
     - SMA_20
     - SMA_50
     - SMA_200
     - EMA_12
     - EMA_26
     - MACD
+    - MACD_signal
+    - MACD_hist
+
+    # Momentum
     - RSI_14
+    - RSI_7
+    - STOCH_k
+    - STOCH_d
+    - CCI_20
+    - Williams_R
+    - ROC_10
+
+    # Volatility
     - BB_upper
+    - BB_middle
     - BB_lower
+    - BB_width
     - ATR_14
+    - Volatility_20
 
-  # 🆕 ADVANCED: Market regime (CRITICO)
-  market_regime:
-    enabled: true
-    features:
-      - ADX
-      - Trend_Strength
-      - Market_Regime  # Bull/Bear/Sideways
-      - Regime_Change
+    # Volume
+    - OBV
+    - Volume_SMA_20
+    - Volume_ratio
+    - MFI_14
+    - VWAP
 
-  # 🆕 ADVANCED: Volatility clustering (CRITICO)
-  volatility_features:
-    enabled: true
-    windows: [5, 10, 20, 60]
-    features:
-      - RealizedVol
-      - ParkinsonVol
-      - VolOfVol
-      - Vol_Regime
-      - Vol_Spike
+  price_features:
+    - Returns_1d
+    - Returns_5d
+    - Returns_20d
+    - Log_returns
+    - Price_momentum_5
+    - Price_momentum_20
+    - High_Low_ratio
+    - Close_Open_ratio
 
-  # 🆕 ADVANCED: Microstructure
-  microstructure:
-    enabled: true
-    features:
-      - High_Low_Range
-      - Body_Size
-      - Candlestick_Patterns
-      - Price_Action_Momentum
+  advanced_features:
+    enabled: true  # Uses simplified AdvancedFeatures.py (30 features)
 
-  # 🆕 ADVANCED: Non-linear transforms
-  non_linear:
-    enabled: true
-    features:
-      - Returns_Squared
-      - Returns_Cubed
-      - Log_transforms
-      - Interactions
-      - Cyclical_time
+  cross_asset:
+    - Correlation_SPY
+    - Correlation_VIX
+    - Beta_market
 
-  # Sentiment (opzionale ma utile)
   sentiment:
-    enabled: true
-    sources:
-      - news_headlines
+    enabled: false  # Disable for faster testing
 
-  # Macro-economic (opzionale)
   macro_economic:
-    enabled: true
-    indicators:
-      - FEDFUNDS
-      - DGS10
-      - VIXCLS
+    enabled: false  # Disable for faster testing
 
-# MODEL CONFIGURATION - OTTIMIZZATO
+# Model Configuration
 models:
   xgboost:
     enabled: true
     params:
-      n_estimators: 1500        # Più trees (era 500)
-      max_depth: 5              # Meno depth per evitare overfit (era 7)
-      learning_rate: 0.01       # Più lento ma accurato (era 0.05)
-      subsample: 0.7            # Più aggressivo (era 0.8)
-      colsample_bytree: 0.7     # Più feature sampling (era 0.8)
-      gamma: 0.5                # Più pruning (era 0.1)
-      min_child_weight: 5       # Più conservativo (era 1)
-      reg_alpha: 0.3            # L1 regularization (era 0.1)
-      reg_lambda: 2.0           # L2 regularization (era 1.0)
+      n_estimators: 300  # Reduced from 500 for speed
+      max_depth: 6       # Reduced from 7
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      gamma: 0.1
+      reg_alpha: 0.1
+      reg_lambda: 1.0
       random_state: 42
 
   lightgbm:
     enabled: true
     params:
-      n_estimators: 1500        # Più trees
-      max_depth: 5              # Meno depth
-      learning_rate: 0.01       # Più lento
-      num_leaves: 31            # OK
-      subsample: 0.7            # Più sampling
-      colsample_bytree: 0.7
-      min_data_in_leaf: 30      # Più conservativo (era 20)
-      min_gain_to_split: 0.01   # Evita split inutili
-      reg_alpha: 0.3            # L1 reg
-      reg_lambda: 2.0           # L2 reg
+      n_estimators: 300
+      max_depth: 6
+      learning_rate: 0.05
+      num_leaves: 31
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_alpha: 0.1
+      reg_lambda: 1.0
       random_state: 42
 
   lstm:
-    enabled: true
+    enabled: false  # DISABLE until you confirm LSTM fix is applied
     params:
-      sequence_length: 120      # Più storia (era 60)
-      lstm_units: [256, 128, 64] # Più capacità
-      dropout: 0.3              # Più dropout (era 0.2)
-      recurrent_dropout: 0.2    # 🆕 Dropout nelle connessioni
-      epochs: 150               # Più epochs (era 100)
-      batch_size: 64            # Batch più grande
-      learning_rate: 0.0005     # Più lento (era 0.001)
-      early_stopping_patience: 30  # Più pazienza
+      sequence_length: 60
+      lstm_units: [128, 64, 32]
+      dropout: 0.2
+      epochs: 100
+      batch_size: 32
+      learning_rate: 0.001
 
   timesfm:
-    enabled: false  # Disabilita per velocità (opzionale)
+    enabled: false  # Optional - enable only if you have GPU
     model_name: "google/timesfm-2.5-200m-pytorch"
     params:
       context_length: 512
@@ -138,25 +120,17 @@ models:
     method: "weighted_average"
     optimization: true
 
-    # 🆕 CRITICAL: Calibration
+  # CRITICAL: Advanced ensemble with calibration
+  advanced_ensemble:
+    enabled: true
     calibration:
-      enabled: true
-      method: "variance_scaling"
+      enabled: false  # DISABLED - breaks predictions
+      method: 'isotonic'  # or 'sigmoid'
+      cv_folds: 3
 
-    # 🆕 CRITICAL: Adaptive thresholds
-    adaptive_thresholds:
-      enabled: true
-      method: "quantile_based"
-      optimize_on_validation: true
-
-    # 🆕 NEW: Uncertainty quantification
-    uncertainty:
-      enabled: true
-      min_confidence: 0.6  # Solo trade con confidence > 60%
-
-# PREDICTION CONFIGURATION
+# Prediction Configuration
 prediction:
-  horizons: [1, 5, 10, 20]  # Multiple horizons
+  horizons: [1, 5, 20]
   targets:
     - direction
     - returns
@@ -165,135 +139,53 @@ prediction:
   confidence_intervals: true
   confidence_level: 0.95
 
-  # 🆕 NEW: Calibrated predictions
-  use_calibration: true
-  use_adaptive_thresholds: true
-
-# TRAINING CONFIGURATION - OTTIMIZZATO
+# Training Configuration
 training:
-  validation_split: 0.15    # Meno validation (era 0.2)
-  test_split: 0.10          # OK
+  validation_split: 0.2
+  test_split: 0.1
   walk_forward: true
-
-  # 🆕 NEW: Cross-validation rigorosa
-  cross_validation:
-    enabled: true
-    n_folds: 5
-    method: "time_series"
+  cross_validation_folds: 5
 
   early_stopping:
     enabled: true
-    patience: 30            # Più pazienza (era 20)
+    patience: 20
     monitor: 'val_loss'
-    min_delta: 0.0001       # Più sensibile
 
-  # 🆕 NEW: Learning rate scheduling
-  lr_schedule:
-    enabled: true
-    method: "reduce_on_plateau"
-    factor: 0.5
-    patience: 10
-
-  # Hyperparameter tuning (opzionale, lento)
-  hyperparameter_tuning:
-    enabled: false
-    n_trials: 100
-    timeout: 7200  # 2 hours
-
-# BACKTESTING - OTTIMIZZATO
+# Backtesting
 backtesting:
   enabled: true
-  initial_capital: 100000
-  commission: 0.001  # 0.1%
-  slippage: 0.0005   # 0.05%
+  initial_capital: 100
+  commission: 0.001
+  slippage: 0.0005
 
   strategies:
-    # Strategy 1: Threshold con calibration
-    - name: calibrated_threshold
-      type: threshold_based
-      params:
-        use_calibration: true
-        use_adaptive_thresholds: true
-        min_confidence: 0.6
-        hold_days: 3
+    - threshold_based
+    - top_k
 
-    # Strategy 2: Top-K più aggressivo
-    - name: aggressive_topk
-      type: top_k
-      params:
-        k: 3                    # Top 3 stocks
-        rebalance_days: 3       # Più frequente (era 5)
-        use_stop_loss: true     # 🆕 Stop loss
-        stop_loss_pct: -0.05    # -5%
-
-    # Strategy 3: Confidence-based (NUOVO)
-    - name: confidence_based
-      type: confidence_weighted
-      params:
-        min_confidence: 0.7
-        position_sizing: "confidence"  # Size = confidence
-        max_position: 0.3      # Max 30% per stock
-
-  # Risk management (NUOVO)
-  risk_management:
-    enabled: true
-    max_position_size: 0.3     # Max 30% in single stock
-    max_daily_loss: 0.02       # Stop trading if -2% daily
-    max_drawdown: 0.20         # Reduce positions at -20%
 
   metrics:
     - sharpe_ratio
-    - sortino_ratio
-    - calmar_ratio
     - max_drawdown
     - win_rate
     - profit_factor
     - total_return
     - annual_return
-    - avg_trade_duration
 
-# OUTPUT CONFIGURATION
+# Output Configuration
 output:
   save_models: true
   save_predictions: true
   save_features: true
-
-  # 🆕 NEW: Auto-generate analysis
-  auto_analysis:
-    enabled: true
-    generate_dashboard: true
-    dashboard_file: "prediction_analysis.html"
 
   reports:
     - performance_summary
     - feature_importance
     - prediction_analysis
     - backtest_results
-    - calibration_metrics  # 🆕 NEW
 
-  format: ['csv', 'json', 'html']
+  format: ['csv', 'json']
 
-# LOGGER
+# Logger
 logger:
   log_level: 'INFO'
   log_file: 'logs/prediction_system.log'
-
-# API KEYS
-api_keys:
-  news_api: 'NEWS_API_KEY'
-  fred_api: 'FRED_API_KEY'
-
-# 🆕 OPTIMIZATION SETTINGS
-optimization:
-  # Auto-tune based on validation performance
-  auto_tune:
-    enabled: false  # Set true per auto-tuning
-    metric: "directional_accuracy"  # Optimize for this
-    max_iterations: 50
-
-  # Feature selection
-  feature_selection:
-    enabled: true
-    method: "importance_based"
-    keep_top_n: 80  # Keep top 80 features
-    min_importance: 0.001
