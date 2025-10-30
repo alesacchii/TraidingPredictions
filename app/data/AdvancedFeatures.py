@@ -18,12 +18,13 @@ class AdvancedFeatures:
     """
     Creates 30 advanced features with ZERO redundancy
     """
-    
-    def __init__(self, data):
-        self.data = data
-        logger.info("Advanced Features (SIMPLIFIED) initialized")
-    
-    def create_all_features(self):
+
+    def __init__(self, config):
+        self.config = config
+        logger.info("AdvancedFeatures wrapper initialized")
+
+    def create_all_features(self, stock_data):
+
         """
         Create simplified advanced features
         """
@@ -31,7 +32,7 @@ class AdvancedFeatures:
         logger.info("CREATING SIMPLIFIED ADVANCED FEATURES")
         logger.info("="*80)
         
-        df = self.data.copy()
+        df = stock_data.copy()
         
         # Group by stock
         result_list = []
@@ -52,7 +53,7 @@ class AdvancedFeatures:
         result = pd.concat(result_list, ignore_index=True)
         
         # Count new features
-        original_cols = set(self.data.columns)
+        original_cols = set(stock_data.columns)
         new_cols = set(result.columns) - original_cols
         
         logger.info(f"\n✅ Created {len(new_cols)} SIMPLIFIED advanced features")

@@ -29,7 +29,7 @@ from app.model.LSTMModel import LSTMModel
 
 # Try to import TimesFM (optional)
 try:
-    from TimesFMModel import TimesFMModel
+    from app.model.TimesFMModel import TimesFMModel
 
     TIMESFM_AVAILABLE = True
 except ImportError:
@@ -45,7 +45,7 @@ from app.data.feature_validator import FeatureValidator
 
 # Try to import advanced features (optional)
 try:
-    from app.data.AdvancedFeatures  import AdvancedFeatures
+    from app.data.AdvancedFeatures import AdvancedFeatures
 
     ADVANCED_FEATURES_AVAILABLE = True
     logger.info("✓ Advanced features module available")
@@ -161,12 +161,13 @@ class StockPredictionSystem:
         logger.info("-" * 80)
 
         # Create base features
-        self.features_data = self.feature_engineer.create_all_features(
-            self.raw_data['stock_data'],
-            market_data=self.raw_data['market_indices'],
-            economic_data=self.raw_data['economic_data'],
-            sentiment_data=self.raw_data['news_data']
-        )
+        use_advanced = self.config.get('features', {}).get('advanced_features', {}).get('enabled', False)
+
+        if use_advanced:
+            from app.data.AdvancedFeatures import AdvancedFeatures
+            logger.info("Using SIMPLIFIED AdvancedFeatures (30 features)")
+            advanced_fe = AdvancedFeatures(self.config)
+            self.features_data = advanced_fe.create_all_features(self.raw_data['stock_data'])
 
         logger.info(f"\nBase features created: {self.features_data.shape}")
 
