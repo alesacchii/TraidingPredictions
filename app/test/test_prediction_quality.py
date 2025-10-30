@@ -426,7 +426,7 @@ class PredictionQualityTester:
             logger.info(f"{verdict}")
         elif pass_rate >= 0.5:  # 4/8
             verdict = "POOR - Model predictions are weak"
-            logger.warning(f"⚠ {verdict}")
+            logger.warning(f" {verdict}")
         else:
             verdict = "USELESS - Model predictions are not reliable"
             logger.error(f"{verdict}")

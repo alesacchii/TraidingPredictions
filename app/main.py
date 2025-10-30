@@ -17,11 +17,11 @@ warnings.filterwarnings('ignore')
 # Import custom modules
 from configuration.Logger_config import setup_logger
 from app.data.DownloadMarketData import MarketDataDownloader
-from app.data.AdvancedFeatures import AdvancedFeatureEngineer  # ← USA QUESTO COMPLETO
-from app.model.TreeModels import TreeBasedModels, TimeSeriesCV
+from app.data.FeatureEngineering_IMPROVED import ImprovedFeatureEngineer
+from app.model.TreeModels import TreeBasedModels
 from app.model.LSTMModel import LSTMModel
 from app.model.TimesFMModel import TimesFMModel
-from app.model.EnsembleModel import EnsembleModel
+from app.model.EnsembleModel_FIXED import FixedEnsembleModel as EnsembleModel
 from app.test.Backtesting import Backtester
 from app.test.test_prediction_quality import PredictionQualityTester
 
@@ -46,7 +46,7 @@ class StockPredictionSystem:
 
         # Initialize components
         self.data_downloader = MarketDataDownloader(self.config)
-        self.feature_engineer = AdvancedFeatureEngineer(self.config)  # ← USA ADVANCED
+        self.feature_engineer = ImprovedFeatureEngineer(self.config)
 
         # Data storage
         self.raw_data = None
@@ -138,14 +138,14 @@ class StockPredictionSystem:
         logger.info("STEP 2: FEATURE ENGINEERING")
         logger.info("-" * 80)
 
-        self.features_data = self.feature_engineer.create_all_features(
+        self.features_data = self.feature_engineer.engineer_features(
             self.raw_data['stock_data'],
             market_data=self.raw_data['market_indices'],
             economic_data=self.raw_data['economic_data'],
             sentiment_data=self.raw_data['news_data']
         )
 
-        logger.info(f"\nFeatures created: {self.features_data.shape}")
+        logger.info(f"Features created: {self.features_data.shape}")
         logger.info(f"Number of features: {len(self.feature_engineer.get_feature_columns(self.features_data))}")
         logger.info("Feature engineering complete\n")
 
@@ -159,8 +159,8 @@ class StockPredictionSystem:
         df = self.features_data.sort_values('Date').reset_index(drop=True)
 
         # Split ratios from config
-        val_split = self.config['training']['validation_split']
-        test_split = self.config['training']['test_split']
+        val_split = self.config['training']['val_ratio']
+        test_split = self.config['training']['test_ratio']
 
         n = len(df)
         train_end = int(n * (1 - val_split - test_split))
@@ -274,7 +274,7 @@ class StockPredictionSystem:
                 self.ensemble.optimize_weights(X_val, y_val)
 
             # Generate ensemble predictions
-            ensemble_pred = self.ensemble.predict(X_test, use_optimized_weights=True)
+            ensemble_pred = self.ensemble.predict(X_test)
             self.predictions['Ensemble'] = ensemble_pred
 
         logger.info(f"\nPredictions generated for {len(self.predictions)} models")

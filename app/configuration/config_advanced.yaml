@@ -1,191 +1,147 @@
-# Market Prediction System Configuration - FIXED VERSION
+# Optimized Configuration for Better Predictions
 
 data_download:
   stocks_list:
     - AAPL
     - GOOGL
-    # Start with just 2 stocks for testing - add more later
-  start_date: '2022-01-01'  # 3 years only for faster testing
-  end_date: null  # null = today
+  start_date: '2020-01-01'  # More data = better predictions
+  end_date: null
 
-# Feature Engineering
 features:
   technical_indicators:
-    # Trend
-    - SMA_20
-    - SMA_50
-    - SMA_200
-    - EMA_12
-    - EMA_26
-    - MACD
-    - MACD_signal
-    - MACD_hist
-
     # Momentum
     - RSI_14
     - RSI_7
     - STOCH_k
     - STOCH_d
-    - CCI_20
     - Williams_R
     - ROC_10
+
+    # Trend
+    - MACD
+    - MACD_signal
+    - MACD_hist
+    - ADX
 
     # Volatility
     - BB_upper
     - BB_middle
     - BB_lower
-    - BB_width
     - ATR_14
-    - Volatility_20
 
     # Volume
     - OBV
-    - Volume_SMA_20
-    - Volume_ratio
     - MFI_14
-    - VWAP
+    - AD  # Accumulation/Distribution
 
   price_features:
     - Returns_1d
+    - Returns_2d
     - Returns_5d
+    - Returns_10d
     - Returns_20d
     - Log_returns
-    - Price_momentum_5
-    - Price_momentum_20
-    - High_Low_ratio
-    - Close_Open_ratio
+    - Volatility_5
+    - Volatility_20
 
   advanced_features:
-    enabled: true  # Uses simplified AdvancedFeatures.py (30 features)
+    enabled: false  # Use our improved feature engineering instead
 
-  cross_asset:
-    - Correlation_SPY
-    - Correlation_VIX
-    - Beta_market
 
-  sentiment:
-    enabled: false  # Disable for faster testing
+  feature_selection:
+    enabled: true
+    method: 'mutual_info'
+    keep_top_n: 50  # Keep only best features
 
-  macro_economic:
-    enabled: false  # Disable for faster testing
-
-# Model Configuration
 models:
   xgboost:
     enabled: true
     params:
-      n_estimators: 300  # Reduced from 500 for speed
-      max_depth: 6       # Reduced from 7
-      learning_rate: 0.05
-      subsample: 0.8
-      colsample_bytree: 0.8
-      gamma: 0.1
-      reg_alpha: 0.1
-      reg_lambda: 1.0
+      n_estimators: 500
+      max_depth: 4  # Reduced to prevent overfitting
+      learning_rate: 0.01  # Lower for better generalization
+      subsample: 0.7
+      colsample_bytree: 0.7
+      gamma: 0.2
+      reg_alpha: 0.5
+      reg_lambda: 2.0
+      min_child_weight: 5
       random_state: 42
+      early_stopping_rounds: 50
 
   lightgbm:
     enabled: true
     params:
-      n_estimators: 300
-      max_depth: 6
-      learning_rate: 0.05
-      num_leaves: 31
-      subsample: 0.8
-      colsample_bytree: 0.8
-      reg_alpha: 0.1
-      reg_lambda: 1.0
+      n_estimators: 500
+      max_depth: 4
+      learning_rate: 0.01
+      num_leaves: 15  # Reduced from 31
+      subsample: 0.7
+      colsample_bytree: 0.7
+      reg_alpha: 0.5
+      reg_lambda: 2.0
+      min_child_samples: 20
       random_state: 42
+      early_stopping_rounds: 50
 
   lstm:
-    enabled: true  # DISABLE until you confirm LSTM fix is applied
+    enabled: false  # Disable until fixed
     params:
-      sequence_length: 60
-      lstm_units: [128, 64, 32]
-      dropout: 0.2
-      epochs: 100
-      batch_size: 32
-      learning_rate: 0.001
+      sequence_length: 30  # Reduced from 60
+      lstm_units: [64, 32]  # Simpler architecture
+      dropout: 0.3
+      epochs: 50
+      batch_size: 16
+      learning_rate: 0.0005
+      early_stopping_patience: 10
 
   timesfm:
-    enabled: true  # Optional - enable only if you have GPU
-    model_name: "google/timesfm-2.5-200m-pytorch"
-    params:
-      context_length: 512
-      horizon_length: 30
-      backend: "gpu"
+    enabled: false  # Disable for now
 
   ensemble:
     enabled: true
-    method: "weighted_average"
+    method: "optimized_weights"
     optimization: true
 
-  # CRITICAL: Advanced ensemble with calibration
-  advanced_ensemble:
-    enabled: true
-    calibration:
-      enabled: false  # DISABLED - breaks predictions
-      method: 'isotonic'  # or 'sigmoid'
-      cv_folds: 3
+training:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
 
-# Prediction Configuration
+  # Cross-validation
+  cross_validation:
+    enabled: true
+    n_splits: 5
+
 prediction:
   horizons: [1, 5, 20]
-  targets:
-    - direction
-    - returns
-    - price
-
-  confidence_intervals: true
   confidence_level: 0.95
 
-# Training Configuration
-training:
-  validation_split: 0.2
-  test_split: 0.1
-  walk_forward: true
-  cross_validation_folds: 5
-
-  early_stopping:
-    enabled: true
-    patience: 20
-    monitor: 'val_loss'
-
-# Backtesting
 backtesting:
-  enabled: true
-  initial_capital: 100
-  commission: 0.001
-  slippage: 0.0005
+  initial_capital: 10000
+  commission: 0.001  # 0.1%
+  slippage: 0.001
 
   strategies:
-    - threshold_based
-    - top_k
+    - name: threshold_based
+      params:
+        buy_threshold: 0.002  # Reduced from 0.01
+        sell_threshold: -0.002
+        hold_period: 1
 
+    - name: top_k
+      params:
+        k: 3
+        rebalance_frequency: 5
 
-  metrics:
-    - sharpe_ratio
-    - max_drawdown
-    - win_rate
-    - profit_factor
-    - total_return
-    - annual_return
+    - name: momentum
+      params:
+        lookback: 20
+        threshold: 0.1
 
-# Output Configuration
 output:
-  save_models: true
   save_predictions: true
+  save_models: true
   save_features: true
-
-  reports:
-    - performance_summary
-    - feature_importance
-    - prediction_analysis
-    - backtest_results
-
-  format: ['csv', 'json']
-
-# Logger
-logger:
-  log_level: 'INFO'
-  log_file: 'logs/prediction_system.log'
+  generate_report: true
+  output_dir: 'outputs'
