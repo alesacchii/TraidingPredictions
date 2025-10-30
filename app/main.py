@@ -21,7 +21,7 @@ from app.data.FeatureEngineering_IMPROVED import ImprovedFeatureEngineer
 from app.model.TreeModels import TreeBasedModels
 from app.model.LSTMModel import LSTMModel
 from app.model.TimesFMModel import TimesFMModel
-from app.model.EnsembleModel_FIXED import FixedEnsembleModel as EnsembleModel
+from app.model.EnsembleModel import EnsembleModel
 from app.test.Backtesting import Backtester
 from app.test.test_prediction_quality import PredictionQualityTester
 
@@ -294,11 +294,17 @@ class StockPredictionSystem:
         target_col = f'Target_return_{primary_horizon}d'
         y_test = self.test_data[target_col]
 
+        # Rimuovere righe con NaN in X_test o y_test
+        mask = X_test.notna().all(axis=1) & y_test.notna()
+        X_test_clean = X_test[mask]
+        y_test_clean = y_test[mask]
+
+        logger.info(f"Removed {len(X_test) - len(X_test_clean)} rows with NaN from test set")
         # Evaluate each model
         for name, model in self.models.items():
             logger.info(f"\n--- Evaluating {name} ---")
             try:
-                metrics = model.evaluate(X_test, y_test, task='regression')
+                metrics = model.evaluate(X_test_clean, y_test_clean, task='regression')
                 self.metrics[name] = metrics
             except Exception as e:
                 logger.error(f"Evaluation failed for {name}: {e}")
@@ -306,7 +312,7 @@ class StockPredictionSystem:
         # Evaluate ensemble
         if self.ensemble is not None:
             logger.info("\n--- Evaluating Ensemble ---")
-            metrics = self.ensemble.evaluate(X_test, y_test, task='regression')
+            metrics = self.ensemble.evaluate(X_test_clean, y_test_clean, task='regression')
             self.metrics['Ensemble'] = metrics
 
             # Compare models
