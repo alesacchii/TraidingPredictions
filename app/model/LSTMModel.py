@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers, callbacks
-from configuration.Logger_config import setup_logger, logger
+from app.configuration.Logger_config import setup_logger, logger
 
 
 class LSTMModel:
@@ -177,35 +177,51 @@ class LSTMModel:
         logger.info("LSTM training complete")
         
         return self.model
-    
+
     def predict(self, X):
         """
-        Make predictions
-        
-        Args:
-            X: Feature dataframe
-            
-        Returns:
-            predictions: 1D array
+        Make predictions - FIXED VERSION
         """
         if self.model is None:
             raise ValueError("Model not trained yet")
-        
+
         # Scale and create sequences
         X_scaled = self.scaler.transform(X)
         X_seq = self.create_sequences(X_scaled)
-        
+
+        # CRITICAL FIX: Check if we have sequences
+        if len(X_seq) == 0:
+            logger.warning("No sequences available for LSTM prediction")
+            logger.warning(f"Input length: {len(X)}, Sequence length: {self.sequence_length}")
+            # Return array of NaN with correct length
+            return np.full(len(X), np.nan)
+
         # Predict
-        predictions = self.model.predict(X_seq, verbose=0)
-        
+        try:
+            predictions = self.model.predict(X_seq, verbose=0)
+        except Exception as e:
+            logger.error(f"LSTM prediction failed: {e}")
+            # Return array of NaN instead of crashing
+            return np.full(len(X), np.nan)
+
         # Flatten if needed
         if predictions.ndim > 1:
             predictions = predictions.flatten()
-        
+
         # Pad beginning with NaN (lost to sequence creation)
         padding = np.full(self.sequence_length, np.nan)
         predictions = np.concatenate([padding, predictions])
-        
+
+        # Ensure correct length
+        if len(predictions) != len(X):
+            logger.warning(f"Prediction length mismatch: {len(predictions)} vs {len(X)}")
+            # Pad or truncate to match
+            if len(predictions) < len(X):
+                padding_needed = len(X) - len(predictions)
+                predictions = np.concatenate([predictions, np.full(padding_needed, np.nan)])
+            else:
+                predictions = predictions[:len(X)]
+
         return predictions
     
     def evaluate(self, X, y, task='regression'):

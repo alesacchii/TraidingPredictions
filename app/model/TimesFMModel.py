@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from configuration.Logger_config import setup_logger, logger
+from app.configuration.Logger_config import setup_logger, logger
 import timesfm
 
 

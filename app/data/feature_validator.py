@@ -6,7 +6,7 @@ Verifica rigorosa della correttezza del calcolo delle features
 
 import pandas as pd
 import numpy as np
-from configuration.Logger_config import setup_logger, logger
+from app.configuration.Logger_config import setup_logger, logger
 
 
 class FeatureValidator:

@@ -2,7 +2,7 @@ import datetime
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from configuration.Logger_config import setup_logger, logger
+from app.configuration.Logger_config import setup_logger, logger
 
 
 class MarketDataDownloader:
